@@ -23,7 +23,7 @@ public class LeaderSelector {
     /**
      * The Connect string.
      */
-    @Value("${scheduler.zookeeper.servers:localhost:2181}")
+    @Value("${scheduler.zookeeper.servers}")
     private String connectString;
 
     /**
