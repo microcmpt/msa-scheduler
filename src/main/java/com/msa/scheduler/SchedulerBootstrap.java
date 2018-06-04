@@ -1,9 +1,7 @@
 package com.msa.scheduler;
 
-import com.msa.scheduler.leaderselection.LeaderSelector;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.context.annotation.Bean;
 
 /**
  * The type Scheduler bootstrap.
