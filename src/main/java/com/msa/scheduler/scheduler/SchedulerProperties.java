@@ -49,4 +49,64 @@ public class SchedulerProperties {
      */
     @Value("${scheduler.mail.to}")
     private String to;
+
+    /**
+     * The Thread count.
+     */
+    @Value("${scheduler.quartz.threadPool.threadCount}")
+    private String threadCount;
+
+    /**
+     * The Table prefix.
+     */
+    @Value("${scheduler.quartz.jobStore.tablePrefix}")
+    private String tablePrefix;
+
+    /**
+     * The Data source.
+     */
+    @Value("${scheduler.quartz.jobStore.dataSource}")
+    private String dataSource;
+
+    /**
+     * The Driver.
+     */
+    @Value("${scheduler.quartz.dataSource.myDS.driver}")
+    private String driver;
+
+    /**
+     * The Url.
+     */
+    @Value("${scheduler.quartz.dataSource.myDS.URL}")
+    private String URL;
+
+    /**
+     * The User.
+     */
+    @Value("${scheduler.quartz.dataSource.myDS.user}")
+    private String user;
+
+    /**
+     * The Ds password.
+     */
+    @Value("${scheduler.quartz.dataSource.myDS.password}")
+    private String dsPassword;
+
+    /**
+     * The Max connections.
+     */
+    @Value("${scheduler.quartz.dataSource.myDS.maxConnections}")
+    private String maxConnections;
+
+    /**
+     * The Is clustered.
+     */
+    @Value("${scheduler.quartz.jobStore.isClustered}")
+    private String isClustered;
+
+    /**
+     * The Cluster checkin interval.
+     */
+    @Value("${scheduler.quartz.jobStore.clusterCheckinInterval}")
+    private String clusterCheckinInterval;
 }
