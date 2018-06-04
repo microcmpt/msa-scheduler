@@ -10,17 +10,6 @@ import org.springframework.context.annotation.Bean;
  */
 @SpringBootApplication
 public class SchedulerBootstrap {
-
-    /**
-     * Selector leader selector.
-     *
-     * @return the leader selector
-     */
-    @Bean(initMethod = "select")
-    public LeaderSelector selector() {
-        return new LeaderSelector();
-    }
-
     /**
      * The entry point of application.
      *
