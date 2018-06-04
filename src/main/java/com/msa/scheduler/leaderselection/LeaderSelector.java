@@ -16,29 +16,17 @@ import java.net.UnknownHostException;
 
 /**
  * The type Leader selector.
+ *
  * @author sxp
  */
 @Slf4j
 public class LeaderSelector implements ApplicationListener<EmbeddedServletContainerInitializedEvent> {
-    /**
-     * The constant PATH.
-     */
     private static final String PATH = "/leader";
-
-    /**
-     * The Connect string.
-     */
+    private int port;
     @Value("${scheduler.zookeeper.servers}")
     private String connectString;
-
-    /**
-     * The Port.
-     */
-    private int port;
-
-    /**
-     * The Registry.
-     */
+    private CuratorFramework client;
+    private LeaderSelectionClient leaderSelectionClient;
     @Autowired
     private ServiceRegistry registry;
 
@@ -46,7 +34,7 @@ public class LeaderSelector implements ApplicationListener<EmbeddedServletContai
      * Select.
      */
     public void select() {
-        CuratorFramework client = CuratorFrameworkFactory.newClient(connectString,
+        client = CuratorFrameworkFactory.newClient(connectString,
                 new ExponentialBackoffRetry(1000, 3));
         String hostname;
         try {
@@ -54,7 +42,7 @@ public class LeaderSelector implements ApplicationListener<EmbeddedServletContai
         } catch (UnknownHostException e) {
             throw new IllegalStateException("found hostname exception", e);
         }
-        LeaderSelectionClient leaderSelectionClient = new LeaderSelectionClient(client, registry, PATH, "Client:" + hostname, port);
+        leaderSelectionClient = new LeaderSelectionClient(client, registry, PATH, "Client:" + hostname, port);
         client.start();
         leaderSelectionClient.start();
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -62,6 +50,15 @@ public class LeaderSelector implements ApplicationListener<EmbeddedServletContai
             CloseableUtils.closeQuietly(client);
             CloseableUtils.closeQuietly(leaderSelectionClient);
         }));
+    }
+
+    /**
+     * Has leader boolean.
+     *
+     * @return the boolean
+     */
+    public boolean hasLeader() {
+        return leaderSelectionClient.hasLeader();
     }
 
     /**
