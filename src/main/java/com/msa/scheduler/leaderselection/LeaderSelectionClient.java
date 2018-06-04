@@ -1,16 +1,18 @@
 package com.msa.scheduler.leaderselection;
 
+import com.msa.api.regcovery.registry.ServiceRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.leader.LeaderSelector;
 import org.apache.curator.framework.recipes.leader.LeaderSelectorListenerAdapter;
-
 import java.io.Closeable;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * The type Leader selection client.
+ * @author sxp
  */
 @Slf4j
 public class LeaderSelectionClient extends LeaderSelectorListenerAdapter implements Closeable {
@@ -23,6 +25,14 @@ public class LeaderSelectionClient extends LeaderSelectorListenerAdapter impleme
      */
     private final LeaderSelector leaderSelector;
     /**
+     * The Registry.
+     */
+    private final ServiceRegistry registry;
+    /**
+     * The Port.
+     */
+    private final int port;
+    /**
      * The Leader count.
      */
     private final AtomicInteger leaderCount = new AtomicInteger(1);
@@ -30,12 +40,16 @@ public class LeaderSelectionClient extends LeaderSelectorListenerAdapter impleme
     /**
      * Instantiates a new Leader selection client.
      *
-     * @param client the client
-     * @param path   the path
-     * @param name   the name
+     * @param client   the client
+     * @param registry the registry
+     * @param path     the path
+     * @param name     the name
+     * @param port     the port
      */
-    public LeaderSelectionClient(CuratorFramework client, String path, String name) {
+    public LeaderSelectionClient(CuratorFramework client, ServiceRegistry registry, String path, String name, int port) {
         this.name = name;
+        this.registry = registry;
+        this.port = port;
         this.leaderSelector = new LeaderSelector(client, path, this);
         this.leaderSelector.autoRequeue();
     }
@@ -85,8 +99,8 @@ public class LeaderSelectionClient extends LeaderSelectorListenerAdapter impleme
     public void takeLeadership(CuratorFramework client) throws Exception {
         log.info(name + " is now the leader.");
         log.info(name + " has been leader " + leaderCount.getAndIncrement() + " time(s) before.");
-        while (true) {
-
-        }
+        String hostAndPort = InetAddress.getLocalHost().getHostAddress() + ":" + port;
+        registry.registry("leader", hostAndPort);
+        while (true) {}
     }
 }
