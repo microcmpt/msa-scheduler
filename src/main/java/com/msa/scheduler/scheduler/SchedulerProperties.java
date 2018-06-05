@@ -20,35 +20,6 @@ public class SchedulerProperties {
     @Value("${scheduler.zookeeper.servers}")
     private String servers;
 
-    /**
-     * The Host.
-     */
-    @Value("${scheduler.mail.host}")
-    private String host;
-
-    /**
-     * The User name.
-     */
-    @Value("${scheduler.mail.username}")
-    private String username;
-
-    /**
-     * The Password.
-     */
-    @Value("${scheduler.mail.password}")
-    private String password;
-
-    /**
-     * The Protocol.
-     */
-    @Value("${scheduler.mail.protocol}")
-    private String protocol;
-
-    /**
-     * The To.
-     */
-    @Value("${scheduler.mail.to}")
-    private String to;
 
     /**
      * The Thread count.
@@ -109,4 +80,5 @@ public class SchedulerProperties {
      */
     @Value("${scheduler.quartz.jobStore.clusterCheckinInterval}")
     private String clusterCheckinInterval;
+
 }

@@ -1,20 +1,18 @@
 package com.msa.scheduler.scheduler;
 
+import com.msa.scheduler.dal.DataSourceConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.Scheduler;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
-import org.springframework.jdbc.datasource.init.DataSourceInitializer;
-import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import javax.sql.DataSource;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -25,6 +23,7 @@ import java.util.Properties;
  */
 @Slf4j
 @Configuration
+@AutoConfigureAfter(DataSourceConfiguration.DataSourceInitializerConfiguration.class)
 public class QuartzConfiguration {
 
     /**
@@ -98,25 +97,5 @@ public class QuartzConfiguration {
     @Bean
     public Scheduler scheduler(SchedulerFactoryBean schedulerFactoryBean) {
         return schedulerFactoryBean.getScheduler();
-    }
-
-    /**
-     * Data source initializer data source initializer.
-     *
-     * @return the data source initializer
-     */
-    @Bean
-    public DataSourceInitializer dataSourceInitializer() {
-        DataSourceInitializer initializer = new DataSourceInitializer();
-        DataSource dataSource = DataSourceBuilder.create()
-                .driverClassName(schedulerProperties.getDriver())
-                .url(schedulerProperties.getURL())
-                .username(schedulerProperties.getUsername())
-                .password(schedulerProperties.getDsPassword())
-                .build();
-        initializer.setDataSource(dataSource);
-        ClassPathResource sqlResource = new ClassPathResource("quartz.sql");
-        initializer.setDatabasePopulator(new ResourceDatabasePopulator(false, false, "utf-8", sqlResource));
-        return initializer;
     }
 }

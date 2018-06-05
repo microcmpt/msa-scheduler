@@ -1,12 +1,14 @@
 package com.msa.scheduler.mail;
 
-import com.msa.scheduler.scheduler.SchedulerProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * The type Email sender configuration.
@@ -20,7 +22,7 @@ public class EmailSenderConfiguration {
      * The Properties.
      */
     @Autowired
-    private SchedulerProperties properties;
+    private MailSettingsProperties properties;
 
     /**
      * Mail sender java mail sender.
@@ -52,5 +54,20 @@ public class EmailSenderConfiguration {
             sender.setProtocol(this.properties.getProtocol());
         }
         sender.setDefaultEncoding("UTF-8");
+        if (!this.properties.getProperties().isEmpty()) {
+            sender.setJavaMailProperties(asProperties(this.properties.getProperties()));
+        }
+    }
+
+    /**
+     * As properties properties.
+     *
+     * @param source the source
+     * @return the properties
+     */
+    private Properties asProperties(Map<String, String> source) {
+        Properties properties = new Properties();
+        properties.putAll(source);
+        return properties;
     }
 }
