@@ -1,6 +1,5 @@
 package com.msa.scheduler.web;
 
-import com.msa.scheduler.http.OkHttpClientInvoker;
 import com.msa.scheduler.leaderselection.LeaderSelector;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,20 +11,21 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * The type Resource handle proxy interceptor.
+ *
  * @author sxp
  */
 @Component
-public class ResourceHandleProxyInterceptor extends HandlerInterceptorAdapter{
-    /**
-     * The Invoker.
-     */
-    @Autowired
-    private OkHttpClientInvoker invoker;
+public class RequestHandleInterceptor extends HandlerInterceptorAdapter{
     /**
      * The Selector.
      */
     @Autowired
     private LeaderSelector selector;
+    /**
+     * The Proxy.
+     */
+    @Autowired
+    private WebProxy proxy;
 
     /**
      * This implementation always returns {@code true}.
