@@ -1,5 +1,6 @@
 package com.msa.scheduler.web;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -8,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * The type Global exception handler.
  */
+@Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -18,7 +20,6 @@ public class GlobalExceptionHandler {
      * @return the map
      */
     @ExceptionHandler(Exception.class)
-    public void exceptionHandler(HttpServletRequest request) {
-        //TODO:处理异常情况
+    public void exceptionHandler(HttpServletRequest request, Throwable e) {
     }
 }

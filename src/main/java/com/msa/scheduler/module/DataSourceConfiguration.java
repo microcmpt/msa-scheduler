@@ -1,4 +1,4 @@
-package com.msa.scheduler.dal;
+package com.msa.scheduler.module;
 
 import com.msa.scheduler.scheduler.SchedulerProperties;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
