@@ -1,6 +1,7 @@
 package com.msa.scheduler.mail;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -30,6 +31,7 @@ public class EmailSenderConfiguration {
      * @return the java mail sender
      */
     @Bean
+    @ConditionalOnProperty(name = "scheduler.mail.enable", havingValue = "true")
     public JavaMailSenderImpl mailSender() {
         JavaMailSenderImpl sender = new JavaMailSenderImpl();
         applyProperties(sender);

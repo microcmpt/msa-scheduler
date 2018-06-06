@@ -5,6 +5,8 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.JobListener;
 
+import java.util.Objects;
+
 /**
  * The type Scheduler job listener.
  */
@@ -56,6 +58,9 @@ public class SchedulerJobListener implements JobListener {
      */
     @Override
     public void jobExecutionVetoed(JobExecutionContext context) {
+        if (Objects.nonNull(mailSender)) {
+
+        }
         // TODO:任务被否决发送邮件通知对应的人员
     }
 
@@ -67,6 +72,9 @@ public class SchedulerJobListener implements JobListener {
      */
     @Override
     public void jobWasExecuted(JobExecutionContext context, JobExecutionException jobException) {
+        if (Objects.nonNull(mailSender)) {
+
+        }
         // TODO:任务被执行后发送邮件通知对应的人员
     }
 }

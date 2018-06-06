@@ -11,7 +11,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/api/v1")
-public class JobController {
+public class CronJobController {
 
     /**
      * Add job map.
