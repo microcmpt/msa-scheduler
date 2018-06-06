@@ -34,39 +34,33 @@ public class SchedulerProperties {
     private String tablePrefix;
 
     /**
-     * The Data source.
-     */
-    @Value("${scheduler.quartz.jobStore.dataSource}")
-    private String dataSource;
-
-    /**
      * The Driver.
      */
-    @Value("${scheduler.quartz.dataSource.myDS.driver}")
+    @Value("${scheduler.quartz.dataSource.quartzDS.driver}")
     private String driver;
 
     /**
      * The Url.
      */
-    @Value("${scheduler.quartz.dataSource.myDS.URL}")
+    @Value("${scheduler.quartz.dataSource.quartzDS.URL}")
     private String URL;
 
     /**
      * The User.
      */
-    @Value("${scheduler.quartz.dataSource.myDS.user}")
+    @Value("${scheduler.quartz.dataSource.quartzDS.user}")
     private String user;
 
     /**
      * The Ds password.
      */
-    @Value("${scheduler.quartz.dataSource.myDS.password}")
+    @Value("${scheduler.quartz.dataSource.quartzDS.password}")
     private String dsPassword;
 
     /**
      * The Max connections.
      */
-    @Value("${scheduler.quartz.dataSource.myDS.maxConnections}")
+    @Value("${scheduler.quartz.dataSource.quartzDS.maxConnections}")
     private String maxConnections;
 
     /**

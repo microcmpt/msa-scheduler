@@ -1,10 +1,8 @@
 package com.msa.scheduler.scheduler;
 
-import com.msa.scheduler.dal.DataSourceConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.Scheduler;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -23,7 +21,6 @@ import java.util.Properties;
  */
 @Slf4j
 @Configuration
-@AutoConfigureAfter(DataSourceConfiguration.DataSourceInitializerConfiguration.class)
 public class QuartzConfiguration {
 
     /**
@@ -67,16 +64,18 @@ public class QuartzConfiguration {
         } else {
             properties.setProperty("org.quartz.jobStore.tablePrefix", "QRTZ_");
         }
-        Assert.hasText(schedulerProperties.getDataSource(), "scheduler.quartz.jobStore.dataSource is missing");
-        properties.setProperty("org.quartz.jobStore.dataSource", schedulerProperties.getDataSource());
-        Assert.hasText(schedulerProperties.getDataSource(), "scheduler.quartz.dataSource.myDS.driver is missing");
-        properties.setProperty("org.quartz.dataSource.myDS.driver", schedulerProperties.getDriver());
-        Assert.hasText(schedulerProperties.getURL(), "scheduler.quartz.dataSource.myDS.URL is missing");
-        properties.setProperty("org.quartz.dataSource.myDS.URL", schedulerProperties.getURL());
-        Assert.hasText(schedulerProperties.getUser(), "scheduler.quartz.dataSource.myDS.user is missing");
-        properties.setProperty("org.quartz.dataSource.myDS.user", schedulerProperties.getUser());
-        Assert.hasText(schedulerProperties.getUser(), "scheduler.quartz.dataSource.myDS.password is missing");
-        properties.setProperty("org.quartz.dataSource.myDS.password", schedulerProperties.getDsPassword());
+        properties.setProperty("org.quartz.jobStore.dataSource", "quartzDS");
+        Assert.hasText(schedulerProperties.getDriver(), "scheduler.quartz.dataSource.quartzDS.driver is missing");
+        properties.setProperty("org.quartz.dataSource.quartzDS.driver", schedulerProperties.getDriver());
+        Assert.hasText(schedulerProperties.getURL(), "scheduler.quartz.dataSource.quartzDS.URL is missing");
+        properties.setProperty("org.quartz.dataSource.quartzDS.URL", schedulerProperties.getURL());
+        Assert.hasText(schedulerProperties.getUser(), "scheduler.quartz.dataSource.quartzDS.user is missing");
+        properties.setProperty("org.quartz.dataSource.quartzDS.user", schedulerProperties.getUser());
+        Assert.hasText(schedulerProperties.getDsPassword(), "scheduler.quartz.dataSource.quartzDS.password is missing");
+        properties.setProperty("org.quartz.dataSource.quartzDS.password", schedulerProperties.getDsPassword());
+        if (StringUtils.hasText(schedulerProperties.getMaxConnections())) {
+            properties.setProperty("org.quartz.dataSource.quartzDS.maxConnections", schedulerProperties.getMaxConnections());
+        }
 
         // cluster config
         if (StringUtils.hasText(schedulerProperties.getIsClustered())) {
