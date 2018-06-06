@@ -15,13 +15,6 @@ import org.springframework.context.annotation.PropertySource;
 @PropertySource("file:///${config.path.prefix}/config/scheduler.properties")
 public class SchedulerProperties {
     /**
-     * The Servers.
-     */
-    @Value("${scheduler.zookeeper.servers}")
-    private String servers;
-
-
-    /**
      * The Thread count.
      */
     @Value("${scheduler.quartz.threadPool.threadCount}")
