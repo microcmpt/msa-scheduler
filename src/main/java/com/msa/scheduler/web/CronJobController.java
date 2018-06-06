@@ -1,5 +1,6 @@
 package com.msa.scheduler.web;
 
+import com.google.common.collect.Maps;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,8 +19,10 @@ public class CronJobController {
      *
      * @return the map
      */
-    @PostMapping("/add/")
+    @PostMapping("/add")
     public Map<String, Object> addJob() {
-        return null;
+        Map<String, Object> map = Maps.newHashMap();
+        map.put("status", "ok");
+        return map;
     }
 }

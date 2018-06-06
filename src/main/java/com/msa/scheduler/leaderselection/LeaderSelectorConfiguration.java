@@ -21,7 +21,7 @@ public class LeaderSelectorConfiguration {
      *
      * @return the leader selector
      */
-    @Bean(initMethod = "select")
+    @Bean
     public LeaderSelector selector() {
         return new LeaderSelector();
     }

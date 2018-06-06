@@ -59,9 +59,8 @@ public class SchedulerJobListener implements JobListener {
     @Override
     public void jobExecutionVetoed(JobExecutionContext context) {
         if (Objects.nonNull(mailSender)) {
-
+            mailSender.sendMail("");
         }
-        // TODO:任务被否决发送邮件通知对应的人员
     }
 
     /**
@@ -75,6 +74,5 @@ public class SchedulerJobListener implements JobListener {
         if (Objects.nonNull(mailSender)) {
 
         }
-        // TODO:任务被执行后发送邮件通知对应的人员
     }
 }

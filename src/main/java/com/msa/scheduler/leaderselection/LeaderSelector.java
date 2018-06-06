@@ -33,7 +33,7 @@ public class LeaderSelector implements ApplicationListener<EmbeddedServletContai
     /**
      * Select.
      */
-    public void select() {
+    private void select() {
         client = CuratorFrameworkFactory.newClient(connectString,
                 new ExponentialBackoffRetry(1000, 3));
         String hostname;
@@ -69,5 +69,6 @@ public class LeaderSelector implements ApplicationListener<EmbeddedServletContai
     @Override
     public void onApplicationEvent(EmbeddedServletContainerInitializedEvent event) {
         this.port = event.getApplicationContext().getEmbeddedServletContainer().getPort();
+        select();
     }
 }
