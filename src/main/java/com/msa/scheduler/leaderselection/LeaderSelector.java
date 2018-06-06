@@ -13,6 +13,7 @@ import org.springframework.context.ApplicationListener;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * The type Leader selector.
@@ -27,6 +28,7 @@ public class LeaderSelector implements ApplicationListener<EmbeddedServletContai
     private String connectString;
     private CuratorFramework client;
     private LeaderSelectionClient leaderSelectionClient;
+    private CountDownLatch downLatch = new CountDownLatch(1);
     @Autowired
     private ServiceRegistry registry;
 
@@ -42,23 +44,16 @@ public class LeaderSelector implements ApplicationListener<EmbeddedServletContai
         } catch (UnknownHostException e) {
             throw new IllegalStateException("found hostname exception", e);
         }
-        leaderSelectionClient = new LeaderSelectionClient(client, registry, PATH, "Client:" + hostname, port);
+        leaderSelectionClient = new LeaderSelectionClient(client, registry,
+                downLatch, PATH, "Client:" + hostname, port);
         client.start();
         leaderSelectionClient.start();
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             log.info("Shutting down leader selection client...");
+            downLatch.countDown();
             CloseableUtils.closeQuietly(client);
             CloseableUtils.closeQuietly(leaderSelectionClient);
         }));
-    }
-
-    /**
-     * Has leader boolean.
-     *
-     * @return the boolean
-     */
-    public boolean hasLeader() {
-        return leaderSelectionClient.hasLeader();
     }
 
     /**

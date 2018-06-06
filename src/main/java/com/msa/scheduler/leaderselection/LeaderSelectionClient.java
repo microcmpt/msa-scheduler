@@ -5,13 +5,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.leader.LeaderSelector;
 import org.apache.curator.framework.recipes.leader.LeaderSelectorListenerAdapter;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * The type Leader selection client.
+ *
  * @author sxp
  */
 @Slf4j
@@ -36,19 +39,26 @@ public class LeaderSelectionClient extends LeaderSelectorListenerAdapter impleme
      * The Leader count.
      */
     private final AtomicInteger leaderCount = new AtomicInteger(1);
+    /**
+     * The Down latch.
+     */
+    private CountDownLatch downLatch;
 
     /**
      * Instantiates a new Leader selection client.
      *
-     * @param client   the client
-     * @param registry the registry
-     * @param path     the path
-     * @param name     the name
-     * @param port     the port
+     * @param client    the client
+     * @param registry  the registry
+     * @param downLatch the down latch
+     * @param path      the path
+     * @param name      the name
+     * @param port      the port
      */
-    public LeaderSelectionClient(CuratorFramework client, ServiceRegistry registry, String path, String name, int port) {
+    public LeaderSelectionClient(CuratorFramework client, ServiceRegistry registry, CountDownLatch downLatch,
+                                 String path, String name, int port) {
         this.name = name;
         this.registry = registry;
+        this.downLatch = downLatch;
         this.port = port;
         this.leaderSelector = new LeaderSelector(client, path, this);
         this.leaderSelector.autoRequeue();
@@ -80,15 +90,6 @@ public class LeaderSelectionClient extends LeaderSelectorListenerAdapter impleme
     }
 
     /**
-     * Has leader boolean.
-     *
-     * @return the boolean
-     */
-    public boolean hasLeader() {
-        return leaderSelector.hasLeadership();
-    }
-
-    /**
      * Called when your instance has been granted leadership. This method
      * should not return until you wish to release leadership
      *
@@ -101,6 +102,6 @@ public class LeaderSelectionClient extends LeaderSelectorListenerAdapter impleme
         log.info(name + " has been leader " + leaderCount.getAndIncrement() + " time(s) before.");
         String hostAndPort = InetAddress.getLocalHost().getHostAddress() + ":" + port;
         registry.registry("leader", hostAndPort);
-        while (true) {}
+        downLatch.await();
     }
 }

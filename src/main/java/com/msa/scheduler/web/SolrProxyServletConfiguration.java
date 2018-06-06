@@ -8,10 +8,19 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
-@Configuration
+/**
+ * The type Solr proxy servlet configuration.
+ * @author sxp
+ */
+@Deprecated
+//@Configuration
 public class SolrProxyServletConfiguration implements EnvironmentAware {
-
-    @Bean
+    /**
+     * Servlet registration bean servlet registration bean.
+     *
+     * @return the servlet registration bean
+     */
+    @Bean(name = "solrProxyServlet")
     public ServletRegistrationBean servletRegistrationBean(){
         ServletRegistrationBean servletRegistrationBean = new ServletRegistrationBean(new ProxyServlet(), propertyResolver.getProperty("servlet_url"));
         servletRegistrationBean.addInitParameter("targetUri", propertyResolver.getProperty("target_url"));
@@ -19,8 +28,16 @@ public class SolrProxyServletConfiguration implements EnvironmentAware {
         return servletRegistrationBean;
     }
 
+    /**
+     * The Property resolver.
+     */
     private RelaxedPropertyResolver propertyResolver;
 
+    /**
+     * Sets environment.
+     *
+     * @param environment the environment
+     */
     @Override
     public void setEnvironment(Environment environment) {
         this.propertyResolver = new RelaxedPropertyResolver(environment, "proxy.solr.");
