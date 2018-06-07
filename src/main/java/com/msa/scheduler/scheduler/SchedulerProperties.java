@@ -21,12 +21,6 @@ public class SchedulerProperties {
     private String threadCount;
 
     /**
-     * The Table prefix.
-     */
-    @Value("${scheduler.quartz.jobStore.tablePrefix}")
-    private String tablePrefix;
-
-    /**
      * The Driver.
      */
     @Value("${scheduler.quartz.dataSource.quartzDS.driver}")

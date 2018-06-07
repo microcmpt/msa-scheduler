@@ -59,11 +59,7 @@ public class QuartzConfiguration {
         }
 
         // db config
-        if (StringUtils.hasText(schedulerProperties.getTablePrefix())) {
-            properties.setProperty("org.quartz.jobStore.tablePrefix", schedulerProperties.getTablePrefix());
-        } else {
-            properties.setProperty("org.quartz.jobStore.tablePrefix", "QRTZ_");
-        }
+        properties.setProperty("org.quartz.jobStore.tablePrefix", "QRTZ_");
         properties.setProperty("org.quartz.jobStore.dataSource", "quartzDS");
         Assert.hasText(schedulerProperties.getDriver(), "scheduler.quartz.dataSource.quartzDS.driver is missing");
         properties.setProperty("org.quartz.dataSource.quartzDS.driver", schedulerProperties.getDriver());
