@@ -1,15 +1,15 @@
 package com.msa.scheduler.scheduler;
 
 import com.msa.scheduler.support.mail.NotifyEmailSender;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.quartz.JobListener;
+import lombok.extern.slf4j.Slf4j;
+import org.quartz.*;
 
 import java.util.Objects;
 
 /**
  * The type Scheduler job listener.
  */
+@Slf4j
 public class SchedulerJobListener implements JobListener {
     /**
      * The Name.
@@ -58,9 +58,11 @@ public class SchedulerJobListener implements JobListener {
      */
     @Override
     public void jobExecutionVetoed(JobExecutionContext context) {
+        String content = mailTemplate(context, "vetoed");
         if (Objects.nonNull(mailSender)) {
-            mailSender.sendMail("");
+            mailSender.sendMail(content);
         }
+        log.info(content);
     }
 
     /**
@@ -71,8 +73,35 @@ public class SchedulerJobListener implements JobListener {
      */
     @Override
     public void jobWasExecuted(JobExecutionContext context, JobExecutionException jobException) {
+        String content = mailTemplate(context, "wasExecuted");
         if (Objects.nonNull(mailSender)) {
-
+            mailSender.sendMail(content);
         }
+        log.info(content);
+    }
+
+    /**
+     * Mail template string.
+     *
+     * @param context the context
+     * @param execute the execute
+     * @return the string
+     */
+    private String mailTemplate(JobExecutionContext context, String execute) {
+        StringBuilder stringBuilder = new StringBuilder();
+        JobDetail job = context.getJobDetail();
+        JobKey jobKey = job.getKey();
+        stringBuilder
+                .append("Job[")
+                .append(jobKey)
+                .append(",")
+                .append(job.getDescription())
+                .append("]");
+        if (Objects.equals("vetoed", execute)) {
+            stringBuilder.append(", execute vetoed! Please check");
+        } else {
+            stringBuilder.append(", was execute!");
+        }
+        return stringBuilder.toString();
     }
 }

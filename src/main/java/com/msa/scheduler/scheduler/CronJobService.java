@@ -1,7 +1,9 @@
 package com.msa.scheduler.scheduler;
 
 import com.msa.scheduler.support.http.OkHttpClientInvoker;
+import com.msa.scheduler.support.mail.NotifyEmailSender;
 import org.quartz.*;
+import org.quartz.impl.matchers.KeyMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,8 +20,16 @@ public class CronJobService {
      */
     @Autowired
     private Scheduler scheduler;
+    /**
+     * The Invoker.
+     */
     @Autowired
     private OkHttpClientInvoker invoker;
+    /**
+     * The Sender.
+     */
+    @Autowired(required = false)
+    private NotifyEmailSender sender;
 
     /**
      * Add job.
@@ -33,10 +43,15 @@ public class CronJobService {
             if (Objects.nonNull(var)) {
                 throw new RuntimeException("Job已存在！");
             }
+
             JobDetail jobDetail = JobBuilder.newJob(SchedulerJob.class).withIdentity(jobModule.getJobName(),
                     jobModule.getJobGroupName()).withDescription(jobModule.getJobDescription()).build();
             jobDetail.getJobDataMap().put("okhttp", invoker);
             jobDetail.getJobDataMap().put("url", jobModule.getUrl());
+            // 添加Job监听器
+            Matcher matcher = KeyMatcher.keyEquals(jobDetail.getKey());
+            scheduler.getListenerManager().addJobListener(new SchedulerJobListener(jobDetail.getKey() + "Listener", sender), matcher);
+
             TriggerBuilder<Trigger> triggerBuilder = TriggerBuilder.newTrigger();
             triggerBuilder.withIdentity(jobModule.getTriggerName(), jobModule.getTriggerGroupName())
                     .withPriority(jobModule.getPriority());
@@ -59,6 +74,7 @@ public class CronJobService {
             }
             triggerBuilder.withSchedule(cronScheduleBuilder).withDescription(jobModule.getTriggerDescription());
             CronTrigger trigger = (CronTrigger) triggerBuilder.build();
+
             scheduler.scheduleJob(jobDetail, trigger);
         } catch (SchedulerException e) {
             throw new RuntimeException("添加定时器任务异常", e);

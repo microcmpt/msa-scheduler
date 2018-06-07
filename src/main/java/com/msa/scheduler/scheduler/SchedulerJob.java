@@ -1,10 +1,12 @@
 package com.msa.scheduler.scheduler;
 
+import com.msa.scheduler.support.http.OkHttpClientInvoker;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.springframework.util.StopWatch;
 
 /**
  * The type Scheduler job.
@@ -14,7 +16,6 @@ import org.quartz.JobExecutionException;
 @Slf4j
 @DisallowConcurrentExecution
 public class SchedulerJob implements Job {
-
     /**
      * Execute.
      *
@@ -23,9 +24,16 @@ public class SchedulerJob implements Job {
      */
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
-//        String url = (String) context.getMergedJobDataMap().get("request.url");
-//        invoker.invoke(url);
-        log.info(">>>>>>>>>>{}execute", context.getJobDetail().getKey());
-
+        try {
+            log.info("execute job:{} start...", context.getJobDetail().getKey());
+            StopWatch stopWatch = new StopWatch();
+            stopWatch.start();
+            String url = (String) context.getJobDetail().getJobDataMap().get("url");
+            OkHttpClientInvoker invoker = (OkHttpClientInvoker) context.getJobDetail().getJobDataMap().get("okhttp");
+            invoker.invoke(url);
+            log.info("execute job:{} end, take time {} ms.", context.getJobDetail().getKey(), stopWatch.getTotalTimeMillis());
+        } catch (Exception e) {
+            log.info(">>>>>>>>>>execute job:{} error, cause by:", context.getJobDetail().getKey(), e);
+        }
     }
 }

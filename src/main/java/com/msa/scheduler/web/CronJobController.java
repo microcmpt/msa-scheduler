@@ -106,6 +106,7 @@ public class CronJobController extends BaseController {
 
     @GetMapping("/hello")
     public String hello() {
+        System.out.println("hello");
         return "ok";
     }
 }

@@ -44,10 +44,10 @@ public class OkHttpClientInvoker implements Serializable {
     }
 
     /**
-     * The type Ok http configuration.
+     * The type Ok http client configuration.
      */
     @Configuration
-    public class OkHttpConfiguration {
+    public class OkHttpClientConfiguration {
         /**
          * Ok http client ok http client invoker . ok http client adapter.
          *
