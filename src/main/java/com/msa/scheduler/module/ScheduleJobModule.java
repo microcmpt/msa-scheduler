@@ -3,6 +3,7 @@ package com.msa.scheduler.module;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.quartz.CronTrigger;
 import org.quartz.Trigger;
 
 /**
@@ -18,5 +19,6 @@ public class ScheduleJobModule {
     private String triggerGroupName;
     private String cron;
     private int priority = Trigger.DEFAULT_PRIORITY;
+    private int misfire = CronTrigger.MISFIRE_INSTRUCTION_DO_NOTHING;
     private boolean startNow;
 }
