@@ -1,7 +1,13 @@
 package com.msa.scheduler.scheduler;
 
+import com.msa.scheduler.support.mail.NotifyEmailSender;
 import lombok.extern.slf4j.Slf4j;
+import org.quartz.JobKey;
+import org.quartz.Matcher;
 import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.impl.matchers.GroupMatcher;
+import org.quartz.impl.matchers.KeyMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,10 +15,13 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 /**
  * The type Quartz configuration.
@@ -92,5 +101,60 @@ public class QuartzConfiguration {
     @Bean
     public Scheduler scheduler(SchedulerFactoryBean schedulerFactoryBean) {
         return schedulerFactoryBean.getScheduler();
+    }
+
+    /**
+     * Initialer schedule job listener initialer.
+     *
+     * @return the schedule job listener initialer
+     */
+    @Bean(initMethod = "init")
+    public ScheduleJobListenerInitialer initialer() {
+        return new ScheduleJobListenerInitialer();
+    }
+
+    /**
+     * The type Schedule job listener initialer.
+     */
+    public class ScheduleJobListenerInitialer {
+        /**
+         * The Scheduler.
+         */
+        @Autowired
+        private Scheduler scheduler;
+        /**
+         * The Sender.
+         */
+        @Autowired(required = false)
+        private NotifyEmailSender sender;
+
+        /**
+         * Init.
+         */
+        public void init() {
+            try {
+                log.info("add JobListeners for jobs");
+                List<String> groupNames = scheduler.getJobGroupNames();
+                if (!CollectionUtils.isEmpty(groupNames)) {
+                    groupNames.forEach(groupName -> {
+                        try {
+                            Set<JobKey> jobKeySet = scheduler.getJobKeys(GroupMatcher.groupEquals(groupName));
+                            jobKeySet.forEach(jobKey -> {
+                                Matcher matcher = KeyMatcher.keyEquals(jobKey);
+                                try {
+                                    scheduler.getListenerManager().addJobListener(new SchedulerJobListener(jobKey + "Listener", sender), matcher);
+                                } catch (SchedulerException e) {
+                                    log.error("add JobListener exception", e);
+                                }
+                            });
+                        } catch (SchedulerException e) {
+                            log.error("get jobkeys exception", e);
+                        }
+                    });
+                }
+            } catch (SchedulerException e) {
+                log.error("get groupNames exception", e);
+            }
+        }
     }
 }

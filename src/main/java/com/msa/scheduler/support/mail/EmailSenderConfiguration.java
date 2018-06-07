@@ -39,6 +39,17 @@ public class EmailSenderConfiguration {
     }
 
     /**
+     * Notify email sender notify email sender.
+     *
+     * @return the notify email sender
+     */
+    @Bean
+    @ConditionalOnProperty(name = "scheduler.mail.enable", havingValue = "true")
+    public NotifyEmailSender notifyEmailSender() {
+        return new NotifyEmailSender();
+    }
+
+    /**
      * Apply properties.
      *
      * @param sender the sender
