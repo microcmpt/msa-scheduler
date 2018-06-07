@@ -44,6 +44,11 @@ public class MailSettingsProperties {
     private String to;
 
     /**
+     * The Enable.
+     */
+    private boolean enable;
+
+    /**
      * The Properties.
      */
     private Map<String, String> properties = new HashMap<>();

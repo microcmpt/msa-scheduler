@@ -60,7 +60,11 @@ public class SchedulerJobListener implements JobListener {
     public void jobExecutionVetoed(JobExecutionContext context) {
         String content = mailTemplate(context, "vetoed");
         if (Objects.nonNull(mailSender)) {
-            mailSender.sendMail(content);
+            try {
+                mailSender.sendMail(content);
+            } catch (Exception e) {
+                log.error("send mail error, cause by:", e);
+            }
         }
         log.info(content);
     }
@@ -75,7 +79,11 @@ public class SchedulerJobListener implements JobListener {
     public void jobWasExecuted(JobExecutionContext context, JobExecutionException jobException) {
         String content = mailTemplate(context, "wasExecuted");
         if (Objects.nonNull(mailSender)) {
-            mailSender.sendMail(content);
+            try {
+                mailSender.sendMail(content);
+            } catch (Exception e) {
+                log.error("send mail error, cause by:", e);
+            }
         }
         log.info(content);
     }

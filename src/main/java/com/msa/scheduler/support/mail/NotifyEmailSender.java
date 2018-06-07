@@ -1,7 +1,6 @@
 package com.msa.scheduler.support.mail;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
@@ -15,12 +14,11 @@ import java.util.Arrays;
  * @author sxp
  */
 @Component
-@ConditionalOnProperty(name = "scheduler.mail.enable", havingValue = "true")
 public class NotifyEmailSender {
     /**
      * The Mail sender.
      */
-    @Autowired
+    @Autowired(required = false)
     private JavaMailSender mailSender;
     /**
      * The Properties.
