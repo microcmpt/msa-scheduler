@@ -30,7 +30,7 @@ public class CronJobService {
                 throw new RuntimeException("Job已存在！");
             }
             JobDetail jobDetail = JobBuilder.newJob(SchedulerJob.class).withIdentity(jobModule.getJobName(),
-                    jobModule.getJobGroupName()).build();
+                    jobModule.getJobGroupName()).withDescription(jobModule.getJobDescription()).build();
             TriggerBuilder<Trigger> triggerBuilder = TriggerBuilder.newTrigger();
             triggerBuilder.withIdentity(jobModule.getTriggerName(), jobModule.getTriggerGroupName())
                     .withPriority(jobModule.getPriority());
@@ -51,7 +51,7 @@ public class CronJobService {
             } else if (Objects.equals(jobModule.getMisfire(), CronTrigger.MISFIRE_INSTRUCTION_FIRE_ONCE_NOW)) {
                 cronScheduleBuilder.withMisfireHandlingInstructionFireAndProceed();
             }
-            triggerBuilder.withSchedule(cronScheduleBuilder);
+            triggerBuilder.withSchedule(cronScheduleBuilder).withDescription(jobModule.getTriggerDescription());
             CronTrigger trigger = (CronTrigger) triggerBuilder.build();
             scheduler.scheduleJob(jobDetail, trigger);
         } catch (SchedulerException e) {

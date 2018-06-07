@@ -25,7 +25,7 @@ public class SchedulerJob implements Job {
     public void execute(JobExecutionContext context) throws JobExecutionException {
 //        String url = (String) context.getMergedJobDataMap().get("request.url");
 //        invoker.invoke(url);
-        log.info(">>>>>>>>>>测试集群");
+        log.info(">>>>>>>>>>{}execute", context.getJobDetail().getKey());
 
     }
 }
