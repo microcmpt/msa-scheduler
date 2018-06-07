@@ -1,6 +1,6 @@
 package com.msa.scheduler;
 
-import com.msa.scheduler.mail.MailSettingsProperties;
+import com.msa.scheduler.support.mail.MailSettingsProperties;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

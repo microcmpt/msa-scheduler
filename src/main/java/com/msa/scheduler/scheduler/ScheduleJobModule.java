@@ -1,4 +1,4 @@
-package com.msa.scheduler.module;
+package com.msa.scheduler.scheduler;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

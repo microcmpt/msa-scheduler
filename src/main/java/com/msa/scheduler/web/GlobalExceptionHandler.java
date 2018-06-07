@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
         Map<String, Object> respMap = Maps.newHashMap();
         respMap.put("status", "fail");
         respMap.put("message", e.getMessage());
-        log.error("uri:{}, message:{}", request.getRequestURI(), e.getMessage(), e);
+        log.error("uri:{}, message:{}", request.getRequestURI(), e.getMessage(), e.getCause());
         return respMap;
     }
 }

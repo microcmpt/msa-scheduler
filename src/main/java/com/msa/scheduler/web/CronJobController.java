@@ -1,6 +1,6 @@
 package com.msa.scheduler.web;
 
-import com.msa.scheduler.module.ScheduleJobModule;
+import com.msa.scheduler.scheduler.ScheduleJobModule;
 import com.msa.scheduler.scheduler.CronJobService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -102,5 +102,10 @@ public class CronJobController extends BaseController {
                                         @PathVariable("jobGroupName") String cron) {
         cronJobService.updateJobCron(jobName, jobGroupName, cron);
         return buildSuccess();
+    }
+
+    @GetMapping("/hello")
+    public String hello() {
+        return "ok";
     }
 }

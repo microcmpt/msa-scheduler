@@ -1,4 +1,4 @@
-package com.msa.scheduler.mail;
+package com.msa.scheduler.support.mail;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

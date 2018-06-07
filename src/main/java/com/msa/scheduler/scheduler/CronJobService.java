@@ -1,9 +1,10 @@
 package com.msa.scheduler.scheduler;
 
-import com.msa.scheduler.module.ScheduleJobModule;
+import com.msa.scheduler.support.http.OkHttpClientInvoker;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 
@@ -17,12 +18,15 @@ public class CronJobService {
      */
     @Autowired
     private Scheduler scheduler;
+    @Autowired
+    private OkHttpClientInvoker invoker;
 
     /**
      * Add job.
      *
      * @param jobModule the job module
      */
+    @Transactional
     public void addJob(ScheduleJobModule jobModule) {
         try {
             JobDetail var = scheduler.getJobDetail(new JobKey(jobModule.getJobName(), jobModule.getJobGroupName()));
@@ -31,6 +35,8 @@ public class CronJobService {
             }
             JobDetail jobDetail = JobBuilder.newJob(SchedulerJob.class).withIdentity(jobModule.getJobName(),
                     jobModule.getJobGroupName()).withDescription(jobModule.getJobDescription()).build();
+            jobDetail.getJobDataMap().put("okhttp", invoker);
+            jobDetail.getJobDataMap().put("url", jobModule.getUrl());
             TriggerBuilder<Trigger> triggerBuilder = TriggerBuilder.newTrigger();
             triggerBuilder.withIdentity(jobModule.getTriggerName(), jobModule.getTriggerGroupName())
                     .withPriority(jobModule.getPriority());
@@ -55,7 +61,7 @@ public class CronJobService {
             CronTrigger trigger = (CronTrigger) triggerBuilder.build();
             scheduler.scheduleJob(jobDetail, trigger);
         } catch (SchedulerException e) {
-            throw new RuntimeException("添加定时器任务异常");
+            throw new RuntimeException("添加定时器任务异常", e);
         }
     }
 
@@ -70,7 +76,7 @@ public class CronJobService {
         try {
             scheduler.pauseJob(jobKey);
         } catch (SchedulerException e) {
-            throw new RuntimeException("暂停定时任务异常");
+            throw new RuntimeException("暂停定时任务异常", e);
         }
     }
 
@@ -85,7 +91,7 @@ public class CronJobService {
         try {
             scheduler.resumeJob(jobKey);
         } catch (SchedulerException e) {
-            throw new RuntimeException("恢复定时任务异常");
+            throw new RuntimeException("恢复定时任务异常", e);
         }
     }
 
@@ -100,7 +106,7 @@ public class CronJobService {
         try {
             scheduler.deleteJob(jobKey);
         } catch (SchedulerException e) {
-            throw new RuntimeException("删除定时任务异常");
+            throw new RuntimeException("删除定时任务异常", e);
         }
     }
 
@@ -115,7 +121,7 @@ public class CronJobService {
         try {
             scheduler.triggerJob(jobKey);
         } catch (SchedulerException e) {
-            throw new RuntimeException("启动定时任务异常");
+            throw new RuntimeException("启动定时任务异常", e);
         }
     }
 
@@ -134,7 +140,7 @@ public class CronJobService {
             trigger = trigger.getTriggerBuilder().withIdentity(triggerKey).withSchedule(scheduleBuilder).build();
             scheduler.rescheduleJob(triggerKey, trigger);
         } catch (SchedulerException e) {
-            throw new RuntimeException("更新定时任务cron异常");
+            throw new RuntimeException("更新定时任务cron异常", e);
         }
     }
 }

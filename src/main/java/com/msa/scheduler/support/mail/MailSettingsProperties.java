@@ -1,4 +1,4 @@
-package com.msa.scheduler.mail;
+package com.msa.scheduler.support.mail;
 
 import lombok.Getter;
 import lombok.Setter;

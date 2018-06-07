@@ -1,6 +1,6 @@
 package com.msa.scheduler.scheduler;
 
-import com.msa.scheduler.mail.NotifyEmailSender;
+import com.msa.scheduler.support.mail.NotifyEmailSender;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.JobListener;
