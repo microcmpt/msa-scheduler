@@ -19,17 +19,17 @@ public class CronJobService {
     private Scheduler scheduler;
 
     /**
-     * Add.
+     * Add job.
      *
      * @param jobModule the job module
      */
-    public void add(ScheduleJobModule jobModule) {
+    public void addJob(ScheduleJobModule jobModule) {
         try {
             JobDetail var = scheduler.getJobDetail(new JobKey(jobModule.getJobName(), jobModule.getJobGroupName()));
             if (Objects.nonNull(var)) {
                 throw new RuntimeException("Job已存在！");
             }
-            JobDetail jobDetail= JobBuilder.newJob(SchedulerJob.class).withIdentity(jobModule.getJobName(),
+            JobDetail jobDetail = JobBuilder.newJob(SchedulerJob.class).withIdentity(jobModule.getJobName(),
                     jobModule.getJobGroupName()).build();
             TriggerBuilder<Trigger> triggerBuilder = TriggerBuilder.newTrigger();
             triggerBuilder.withIdentity(jobModule.getTriggerName(), jobModule.getTriggerGroupName())
@@ -45,9 +45,9 @@ public class CronJobService {
             //——重做错过的所有频率周期后
             //——当下一次触发频率发生时间大于当前时间后，再按照正常的Cron频率依次执行
             if (Objects.equals(jobModule.getMisfire(), Trigger.MISFIRE_INSTRUCTION_IGNORE_MISFIRE_POLICY)) {
-                 cronScheduleBuilder.withMisfireHandlingInstructionIgnoreMisfires();
-            //——以当前时间为触发频率立刻触发一次执行
-            //——然后按照Cron频率依次执行
+                cronScheduleBuilder.withMisfireHandlingInstructionIgnoreMisfires();
+                //——以当前时间为触发频率立刻触发一次执行
+                //——然后按照Cron频率依次执行
             } else if (Objects.equals(jobModule.getMisfire(), CronTrigger.MISFIRE_INSTRUCTION_FIRE_ONCE_NOW)) {
                 cronScheduleBuilder.withMisfireHandlingInstructionFireAndProceed();
             }
@@ -56,6 +56,85 @@ public class CronJobService {
             scheduler.scheduleJob(jobDetail, trigger);
         } catch (SchedulerException e) {
             throw new RuntimeException("添加定时器任务异常");
+        }
+    }
+
+    /**
+     * Pause job.
+     *
+     * @param jobName      the job name
+     * @param jobGroupName the job group name
+     */
+    public void pauseJob(String jobName, String jobGroupName) {
+        JobKey jobKey = new JobKey(jobName, jobGroupName);
+        try {
+            scheduler.pauseJob(jobKey);
+        } catch (SchedulerException e) {
+            throw new RuntimeException("暂停定时任务异常");
+        }
+    }
+
+    /**
+     * Resume job.
+     *
+     * @param jobName      the job name
+     * @param jobGroupName the job group name
+     */
+    public void resumeJob(String jobName, String jobGroupName) {
+        JobKey jobKey = new JobKey(jobName, jobGroupName);
+        try {
+            scheduler.resumeJob(jobKey);
+        } catch (SchedulerException e) {
+            throw new RuntimeException("恢复定时任务异常");
+        }
+    }
+
+    /**
+     * Delete job.
+     *
+     * @param jobName      the job name
+     * @param jobGroupName the job group name
+     */
+    public void deleteJob(String jobName, String jobGroupName) {
+        JobKey jobKey = new JobKey(jobName, jobGroupName);
+        try {
+            scheduler.deleteJob(jobKey);
+        } catch (SchedulerException e) {
+            throw new RuntimeException("删除定时任务异常");
+        }
+    }
+
+    /**
+     * Start now.
+     *
+     * @param jobName      the job name
+     * @param jobGroupName the job group name
+     */
+    public void startNow(String jobName, String jobGroupName) {
+        JobKey jobKey = JobKey.jobKey(jobName, jobGroupName);
+        try {
+            scheduler.triggerJob(jobKey);
+        } catch (SchedulerException e) {
+            throw new RuntimeException("启动定时任务异常");
+        }
+    }
+
+    /**
+     * Update job cron.
+     *
+     * @param jobName      the job name
+     * @param jobGroupName the job group name
+     * @param cron         the cron
+     */
+    public void updateJobCron(String jobName, String jobGroupName, String cron) {
+        TriggerKey triggerKey = TriggerKey.triggerKey(jobName, jobGroupName);
+        try {
+            CronTrigger trigger = (CronTrigger) scheduler.getTrigger(triggerKey);
+            CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(cron);
+            trigger = trigger.getTriggerBuilder().withIdentity(triggerKey).withSchedule(scheduleBuilder).build();
+            scheduler.rescheduleJob(triggerKey, trigger);
+        } catch (SchedulerException e) {
+            throw new RuntimeException("更新定时任务cron异常");
         }
     }
 }
