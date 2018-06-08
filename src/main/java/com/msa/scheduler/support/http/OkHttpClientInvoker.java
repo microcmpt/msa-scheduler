@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The type Ok http client invoker.
@@ -22,7 +23,7 @@ public class OkHttpClientInvoker implements Serializable {
      * The Client.
      */
     @Autowired
-    private OkHttpClientAdapter client;
+    private OkHttpClient client;
 
     /**
      * Invoke string.
@@ -47,26 +48,20 @@ public class OkHttpClientInvoker implements Serializable {
      * The type Ok http client configuration.
      */
     @Configuration
-    public class OkHttpClientConfiguration {
+    public static class OkHttpClientConfiguration {
         /**
          * Ok http client ok http client invoker . ok http client adapter.
          *
+         * @param properties the properties
          * @return the ok http client invoker . ok http client adapter
          */
         @Bean
-        public OkHttpClientInvoker.OkHttpClientAdapter okHttpClient() {
-            return new OkHttpClientInvoker.OkHttpClientAdapter();
-        }
-    }
-
-    /**
-     * The type Ok http client adapter.
-     */
-    static class OkHttpClientAdapter extends OkHttpClient implements Serializable {
-        /**
-         * Instantiates a new Ok http client adapter.
-         */
-        public OkHttpClientAdapter() {
+        public OkHttpClient okHttpClient(OkHttpClientProperties properties) {
+            OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                    .connectTimeout(properties.getConnectTimeout(), TimeUnit.SECONDS)
+                    .readTimeout(properties.getReadTimeout(), TimeUnit.SECONDS)
+                    .writeTimeout(properties.getWriteTimeout(), TimeUnit.SECONDS);
+            return builder.build();
         }
     }
 }

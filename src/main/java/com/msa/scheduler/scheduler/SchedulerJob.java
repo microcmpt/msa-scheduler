@@ -1,5 +1,6 @@
 package com.msa.scheduler.scheduler;
 
+import com.msa.scheduler.support.ApplicationContextBeanUtil;
 import com.msa.scheduler.support.http.OkHttpClientInvoker;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.DisallowConcurrentExecution;
@@ -29,7 +30,7 @@ public class SchedulerJob implements Job {
             StopWatch stopWatch = new StopWatch();
             stopWatch.start();
             String url = (String) context.getJobDetail().getJobDataMap().get("url");
-            OkHttpClientInvoker invoker = (OkHttpClientInvoker) context.getJobDetail().getJobDataMap().get("okhttp");
+            OkHttpClientInvoker invoker = (OkHttpClientInvoker) ApplicationContextBeanUtil.getBean("okHttpClientInvoker");
             invoker.invoke(url);
             stopWatch.stop();
             log.info("execute job:{} end, take time {} ms.", context.getJobDetail().getKey(), stopWatch.getTotalTimeMillis());

@@ -1,6 +1,5 @@
 package com.msa.scheduler.scheduler;
 
-import com.msa.scheduler.support.http.OkHttpClientInvoker;
 import com.msa.scheduler.support.mail.NotifyEmailSender;
 import org.quartz.*;
 import org.quartz.impl.matchers.KeyMatcher;
@@ -20,11 +19,6 @@ public class CronJobService {
      */
     @Autowired
     private Scheduler scheduler;
-    /**
-     * The Invoker.
-     */
-    @Autowired
-    private OkHttpClientInvoker invoker;
     /**
      * The Sender.
      */
@@ -46,7 +40,6 @@ public class CronJobService {
 
             JobDetail jobDetail = JobBuilder.newJob(SchedulerJob.class).withIdentity(jobModule.getJobName(),
                     jobModule.getJobGroupName()).withDescription(jobModule.getJobDescription()).build();
-            jobDetail.getJobDataMap().put("okhttp", invoker);
             jobDetail.getJobDataMap().put("url", jobModule.getUrl());
             // 添加Job监听器
             Matcher matcher = KeyMatcher.keyEquals(jobDetail.getKey());
