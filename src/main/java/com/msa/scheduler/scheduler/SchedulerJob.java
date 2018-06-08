@@ -9,6 +9,8 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.util.StopWatch;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 /**
  * The type Scheduler job.
  *
@@ -30,6 +32,10 @@ public class SchedulerJob implements Job {
             StopWatch stopWatch = new StopWatch();
             stopWatch.start();
             String url = (String) context.getJobDetail().getJobDataMap().get("url");
+            if (url.contains(",")) {
+                String[] var = url.split(",");
+                url = var[ThreadLocalRandom.current().nextInt(var.length)];
+            }
             OkHttpClientInvoker invoker = (OkHttpClientInvoker) ApplicationContextBeanUtil.getBean("okHttpClientInvoker");
             invoker.invoke(url);
             stopWatch.stop();
