@@ -38,7 +38,7 @@ public class OkHttpClientInvoker implements Serializable {
             Response response = client.newCall(request).execute();
             return response.body().string();
         } catch (IOException e) {
-            log.error("send request url:{} exception", url);
+            log.error("send request url:{} exception", url, e);
         }
         return null;
     }
