@@ -105,10 +105,10 @@ public class SchedulerJobListener implements JobListener {
                 .append(",")
                 .append(job.getDescription())
                 .append("】");
-        if (Objects.equals(" was vetoed", execute)) {
+        if (Objects.equals("was vetoed", execute)) {
             stringBuilder.append("execute vetoed! Please check!");
         } else {
-            stringBuilder.append(" was execute!");
+            stringBuilder.append("was execute!");
             if (Objects.nonNull(e)) {
                 stringBuilder.append(" But execute exception, cause by:")
                         .append(e.getCause());
