@@ -106,6 +106,11 @@ public class CronJobController extends BaseController {
 
     @GetMapping("/hello")
     public String hello() {
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         System.out.println("hello");
         return "ok";
     }

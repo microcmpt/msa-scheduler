@@ -31,6 +31,7 @@ public class SchedulerJob implements Job {
             String url = (String) context.getJobDetail().getJobDataMap().get("url");
             OkHttpClientInvoker invoker = (OkHttpClientInvoker) context.getJobDetail().getJobDataMap().get("okhttp");
             invoker.invoke(url);
+            stopWatch.stop();
             log.info("execute job:{} end, take time {} ms.", context.getJobDetail().getKey(), stopWatch.getTotalTimeMillis());
         } catch (Exception e) {
             log.info(">>>>>>>>>>execute job:{} error, cause by:", context.getJobDetail().getKey(), e);
