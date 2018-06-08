@@ -20,6 +20,7 @@ import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 
@@ -83,8 +84,7 @@ public class QuartzConfiguration {
         }
 
         // cluster config
-        if (StringUtils.hasText(schedulerProperties.getIsClustered())) {
-            Assert.isTrue(Boolean.valueOf(schedulerProperties.getIsClustered()), "scheduler.quartz.jobStore.isClustered is false, actual allow true");
+        if (Objects.equals("true", schedulerProperties.getIsClustered())) {
             properties.setProperty("org.quartz.jobStore.isClustered", schedulerProperties.getIsClustered());
         }
         if (StringUtils.hasText(schedulerProperties.getClusterCheckinInterval())) {
