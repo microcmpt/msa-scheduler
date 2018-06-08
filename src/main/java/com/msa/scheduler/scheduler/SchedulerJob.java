@@ -26,14 +26,14 @@ public class SchedulerJob implements Job {
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         try {
-            log.info("execute job:{} start...", context.getJobDetail().getKey());
+            log.info("execute job:[{}] start...", context.getJobDetail().getKey());
             StopWatch stopWatch = new StopWatch();
             stopWatch.start();
             String url = (String) context.getJobDetail().getJobDataMap().get("url");
             OkHttpClientInvoker invoker = (OkHttpClientInvoker) ApplicationContextBeanUtil.getBean("okHttpClientInvoker");
             invoker.invoke(url);
             stopWatch.stop();
-            log.info("execute job:{} end, take time {} ms.", context.getJobDetail().getKey(), stopWatch.getTotalTimeMillis());
+            log.info("execute job:[{}] end, take time {} ms.", context.getJobDetail().getKey(), stopWatch.getTotalTimeMillis());
         } catch (Exception e) {
             log.info("execute job:[{}] error, cause by:", context.getJobDetail().getKey(), e);
             throw new JobExecutionException(e);
