@@ -35,7 +35,7 @@ public class SchedulerJob implements Job {
             stopWatch.stop();
             log.info("execute job:{} end, take time {} ms.", context.getJobDetail().getKey(), stopWatch.getTotalTimeMillis());
         } catch (Exception e) {
-            log.info(">>>>>>>>>>execute job:{} error, cause by:", context.getJobDetail().getKey(), e);
+            log.info("execute job:[{}] error, cause by:", context.getJobDetail().getKey(), e);
             throw new JobExecutionException(e);
         }
     }
