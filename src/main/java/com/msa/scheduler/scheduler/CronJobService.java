@@ -45,6 +45,11 @@ public class CronJobService {
             Matcher matcher = KeyMatcher.keyEquals(jobDetail.getKey());
             scheduler.getListenerManager().addJobListener(new SchedulerJobListener(jobDetail.getKey() + "Listener", sender), matcher);
 
+            Trigger va1 = scheduler.getTrigger(new TriggerKey(jobModule.getTriggerName(), jobModule.getTriggerGroupName()));
+            if (Objects.nonNull(va1)) {
+                throw new RuntimeException("Trigger已存在！");
+            }
+
             TriggerBuilder<Trigger> triggerBuilder = TriggerBuilder.newTrigger();
             triggerBuilder.withIdentity(jobModule.getTriggerName(), jobModule.getTriggerGroupName())
                     .withPriority(jobModule.getPriority());
