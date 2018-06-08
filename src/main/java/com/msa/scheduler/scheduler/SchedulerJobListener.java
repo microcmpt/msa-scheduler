@@ -58,7 +58,7 @@ public class SchedulerJobListener implements JobListener {
      */
     @Override
     public void jobExecutionVetoed(JobExecutionContext context) {
-        String content = mailTemplate(context, "vetoed");
+        String content = mailTemplate(context, "vetoed", null);
         if (Objects.nonNull(mailSender)) {
             try {
                 mailSender.sendMail(content);
@@ -77,7 +77,7 @@ public class SchedulerJobListener implements JobListener {
      */
     @Override
     public void jobWasExecuted(JobExecutionContext context, JobExecutionException jobException) {
-        String content = mailTemplate(context, "wasExecuted");
+        String content = mailTemplate(context, "wasExecuted", jobException);
         if (Objects.nonNull(mailSender)) {
             try {
                 mailSender.sendMail(content);
@@ -95,20 +95,24 @@ public class SchedulerJobListener implements JobListener {
      * @param execute the execute
      * @return the string
      */
-    private String mailTemplate(JobExecutionContext context, String execute) {
+    private String mailTemplate(JobExecutionContext context, String execute, JobExecutionException e) {
         StringBuilder stringBuilder = new StringBuilder();
         JobDetail job = context.getJobDetail();
         JobKey jobKey = job.getKey();
         stringBuilder
-                .append("Job[")
+                .append("Job【")
                 .append(jobKey)
                 .append(",")
                 .append(job.getDescription())
-                .append("]");
-        if (Objects.equals("vetoed", execute)) {
-            stringBuilder.append(", execute vetoed! Please check");
+                .append("】");
+        if (Objects.equals(" was vetoed", execute)) {
+            stringBuilder.append("execute vetoed! Please check!");
         } else {
-            stringBuilder.append(", was execute!");
+            stringBuilder.append(" was execute!");
+            if (Objects.nonNull(e)) {
+                stringBuilder.append(" But execute exception, cause by:")
+                        .append(e.getCause());
+            }
         }
         return stringBuilder.toString();
     }

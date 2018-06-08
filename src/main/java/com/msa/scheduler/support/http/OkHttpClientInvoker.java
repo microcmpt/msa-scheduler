@@ -31,17 +31,12 @@ public class OkHttpClientInvoker implements Serializable {
      * @param url the url
      * @return the string
      */
-    public String invoke(String url) {
+    public String invoke(String url) throws IOException {
         Request request = new Request.Builder()
                 .url(url)
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            return response.body().string();
-        } catch (IOException e) {
-            log.error("send request url:{} exception", url, e);
-        }
-        return null;
+        Response response = client.newCall(request).execute();
+        return response.body().string();
     }
 
     /**
