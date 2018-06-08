@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -18,7 +17,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 @Component
-public class OkHttpClientInvoker implements Serializable {
+public class OkHttpClientInvoker {
     /**
      * The Client.
      */
