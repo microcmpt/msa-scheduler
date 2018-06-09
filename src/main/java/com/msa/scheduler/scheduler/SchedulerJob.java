@@ -37,7 +37,7 @@ public class SchedulerJob implements Job {
             String applicationId = context.getJobDetail().getJobDataMap().getString("applicationId");
             ServiceDiscovery serviceDiscovery = (ServiceDiscovery) ApplicationContextBeanUtil.getBean("serviceDiscovery");
             try {
-                url = serviceDiscovery.discover(context.getJobDetail().getJobDataMap().getString("applicationId"));
+                url = serviceDiscovery.discover(context.getJobDetail().getJobDataMap().getString("applicationId")).replace(":=", "");
             } catch (Exception e) {
                 log.warn("{} can not found in service registry!", applicationId);
             }
