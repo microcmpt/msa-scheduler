@@ -1,5 +1,6 @@
 package com.msa.scheduler.scheduler;
 
+import com.msa.scheduler.support.ScheduleJobException;
 import com.msa.scheduler.support.mail.NotifyEmailSender;
 import org.quartz.*;
 import org.quartz.impl.matchers.KeyMatcher;
@@ -35,7 +36,7 @@ public class CronJobService {
         try {
             JobDetail var = scheduler.getJobDetail(new JobKey(jobModule.getJobName(), jobModule.getJobGroupName()));
             if (Objects.nonNull(var)) {
-                throw new RuntimeException("Job已存在！");
+                throw new ScheduleJobException("Job已存在！");
             }
 
             JobDetail jobDetail = JobBuilder.newJob(SchedulerJob.class).withIdentity(jobModule.getJobName(),
@@ -49,7 +50,7 @@ public class CronJobService {
 
             Trigger va1 = scheduler.getTrigger(new TriggerKey(jobModule.getTriggerName(), jobModule.getTriggerGroupName()));
             if (Objects.nonNull(va1)) {
-                throw new RuntimeException("Trigger已存在！");
+                throw new ScheduleJobException("Trigger已存在！");
             }
 
             TriggerBuilder<Trigger> triggerBuilder = TriggerBuilder.newTrigger();
@@ -77,7 +78,7 @@ public class CronJobService {
 
             scheduler.scheduleJob(jobDetail, trigger);
         } catch (SchedulerException e) {
-            throw new RuntimeException("添加定时器任务异常", e);
+            throw new ScheduleJobException("添加定时器任务异常", e);
         }
     }
 
@@ -92,7 +93,7 @@ public class CronJobService {
         try {
             scheduler.pauseJob(jobKey);
         } catch (SchedulerException e) {
-            throw new RuntimeException("暂停定时任务异常", e);
+            throw new ScheduleJobException("暂停定时任务异常", e);
         }
     }
 
@@ -107,7 +108,7 @@ public class CronJobService {
         try {
             scheduler.resumeJob(jobKey);
         } catch (SchedulerException e) {
-            throw new RuntimeException("恢复定时任务异常", e);
+            throw new ScheduleJobException("恢复定时任务异常", e);
         }
     }
 
@@ -122,7 +123,7 @@ public class CronJobService {
         try {
             scheduler.deleteJob(jobKey);
         } catch (SchedulerException e) {
-            throw new RuntimeException("删除定时任务异常", e);
+            throw new ScheduleJobException("删除定时任务异常", e);
         }
     }
 
@@ -137,7 +138,7 @@ public class CronJobService {
         try {
             scheduler.triggerJob(jobKey);
         } catch (SchedulerException e) {
-            throw new RuntimeException("启动定时任务异常", e);
+            throw new ScheduleJobException("启动定时任务异常", e);
         }
     }
 
@@ -156,7 +157,7 @@ public class CronJobService {
             trigger = trigger.getTriggerBuilder().withIdentity(triggerKey).withSchedule(scheduleBuilder).build();
             scheduler.rescheduleJob(triggerKey, trigger);
         } catch (SchedulerException e) {
-            throw new RuntimeException("更新定时任务cron异常", e);
+            throw new ScheduleJobException("更新定时任务cron异常", e);
         }
     }
 }

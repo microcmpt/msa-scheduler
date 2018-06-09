@@ -2,6 +2,7 @@ package com.msa.scheduler.scheduler;
 
 import com.msa.api.regcovery.discovery.ServiceDiscovery;
 import com.msa.scheduler.support.ApplicationContextBeanUtil;
+import com.msa.scheduler.support.ScheduleJobException;
 import com.msa.scheduler.support.http.OkHttpClientInvoker;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
@@ -44,7 +45,7 @@ public class SchedulerJob implements Job {
             if (!StringUtils.hasText(url)) {
                 url = jobDataMap.getString("url");
                 if (!StringUtils.hasText(url)) {
-                    throw new RuntimeException("url is empty");
+                    throw new ScheduleJobException("url is empty");
                 }
                 if (url.contains(",")) {
                     String[] var = url.split(",");
