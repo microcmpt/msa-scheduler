@@ -4,10 +4,7 @@ import com.msa.api.regcovery.discovery.ServiceDiscovery;
 import com.msa.scheduler.support.ApplicationContextBeanUtil;
 import com.msa.scheduler.support.http.OkHttpClientInvoker;
 import lombok.extern.slf4j.Slf4j;
-import org.quartz.DisallowConcurrentExecution;
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
+import org.quartz.*;
 import org.springframework.util.StopWatch;
 import org.springframework.util.StringUtils;
 
@@ -33,19 +30,28 @@ public class SchedulerJob implements Job {
             log.info("execute job:[{}] start...", context.getJobDetail().getKey());
             StopWatch stopWatch = new StopWatch();
             stopWatch.start();
+            JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
             String url = "";
             String applicationId = context.getJobDetail().getJobDataMap().getString("applicationId");
             ServiceDiscovery serviceDiscovery = (ServiceDiscovery) ApplicationContextBeanUtil.getBean("serviceDiscovery");
             try {
-                url = serviceDiscovery.discover(context.getJobDetail().getJobDataMap().getString("applicationId")).replace(":=", "");
+                url = serviceDiscovery.discover(jobDataMap.getString("applicationId")).replace(":=", "");
+                String uri =  jobDataMap.getString("uri");
+                url = uri.startsWith("/") ? "http://" + url + uri : "http://" + uri + "/" + uri;
             } catch (Exception e) {
                 log.warn("{} can not found in service registry!", applicationId);
             }
             if (!StringUtils.hasText(url)) {
-                url = context.getJobDetail().getJobDataMap().getString("url");
+                url = jobDataMap.getString("url");
+                if (!StringUtils.hasText(url)) {
+                    throw new RuntimeException("url is empty");
+                }
                 if (url.contains(",")) {
                     String[] var = url.split(",");
                     url = var[ThreadLocalRandom.current().nextInt(var.length)];
+                }
+                if (!url.startsWith("http://")) {
+                    url = "http://" + url;
                 }
             }
             OkHttpClientInvoker invoker = (OkHttpClientInvoker) ApplicationContextBeanUtil.getBean("okHttpClientInvoker");
