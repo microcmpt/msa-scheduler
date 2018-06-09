@@ -1,11 +1,12 @@
 package com.msa.scheduler.web;
 
-import com.msa.scheduler.scheduler.ScheduleJobModule;
 import com.msa.scheduler.scheduler.CronJobService;
+import com.msa.scheduler.scheduler.ScheduleJobModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Map;
 
 /**
@@ -27,7 +28,7 @@ public class CronJobController extends BaseController {
      * @return the map
      */
     @PostMapping(value = "/add", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public Map<String, Object> addJob(@RequestBody ScheduleJobModule jobModule) {
+    public Map<String, Object> addJob(@RequestBody @Valid ScheduleJobModule jobModule) {
         cronJobService.addJob(jobModule);
         return buildSuccess();
     }
