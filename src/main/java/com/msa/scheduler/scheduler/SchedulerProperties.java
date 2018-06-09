@@ -1,6 +1,7 @@
 package com.msa.scheduler.scheduler;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -10,6 +11,7 @@ import org.springframework.context.annotation.PropertySource;
  *
  * @author sxp
  */
+@Setter
 @Getter
 @Configuration
 @PropertySource("file:///${config.path.prefix}/config/scheduler.properties")
@@ -61,5 +63,11 @@ public class SchedulerProperties {
      */
     @Value("${scheduler.quartz.jobStore.clusterCheckinInterval}")
     private String clusterCheckinInterval;
+
+    /**
+     * The Zk addresses.
+     */
+    @Value("${scheduler.zk.addresses}")
+    private String zkAddresses;
 
 }

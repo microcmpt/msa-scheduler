@@ -1,5 +1,6 @@
 package com.msa.scheduler.scheduler;
 
+import com.msa.api.regcovery.discovery.ZkServiceDiscovery;
 import com.msa.scheduler.support.mail.NotifyEmailSender;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobKey;
@@ -9,6 +10,8 @@ import org.quartz.SchedulerException;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.quartz.impl.matchers.KeyMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -156,5 +159,20 @@ public class QuartzConfiguration {
                 log.error("get groupNames exception", e);
             }
         }
+    }
+
+    /**
+     * Service discovery zk service discovery.
+     *
+     * @param properties the properties
+     * @return the zk service discovery
+     */
+    @Bean
+    @ConditionalOnProperty(name = "scheduler.zk.addresses")
+    @ConditionalOnClass(ZkServiceDiscovery.class)
+    public ZkServiceDiscovery serviceDiscovery(SchedulerProperties properties) {
+        ZkServiceDiscovery serviceDiscovery = new ZkServiceDiscovery();
+        serviceDiscovery.setZkAddress(properties.getZkAddresses());
+        return serviceDiscovery;
     }
 }

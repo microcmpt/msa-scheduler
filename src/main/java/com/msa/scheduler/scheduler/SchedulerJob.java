@@ -1,5 +1,6 @@
 package com.msa.scheduler.scheduler;
 
+import com.msa.api.regcovery.discovery.ServiceDiscovery;
 import com.msa.scheduler.support.ApplicationContextBeanUtil;
 import com.msa.scheduler.support.http.OkHttpClientInvoker;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +9,7 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.util.StopWatch;
+import org.springframework.util.StringUtils;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -31,10 +33,20 @@ public class SchedulerJob implements Job {
             log.info("execute job:[{}] start...", context.getJobDetail().getKey());
             StopWatch stopWatch = new StopWatch();
             stopWatch.start();
-            String url = (String) context.getJobDetail().getJobDataMap().get("url");
-            if (url.contains(",")) {
-                String[] var = url.split(",");
-                url = var[ThreadLocalRandom.current().nextInt(var.length)];
+            String url = "";
+            String applicationId = context.getJobDetail().getJobDataMap().getString("applicationId");
+            ServiceDiscovery serviceDiscovery = (ServiceDiscovery) ApplicationContextBeanUtil.getBean("serviceDiscovery");
+            try {
+                url = serviceDiscovery.discover(context.getJobDetail().getJobDataMap().getString("applicationId"));
+            } catch (Exception e) {
+                log.warn("{} can not found in service registry!", applicationId);
+            }
+            if (!StringUtils.hasText(url)) {
+                url = context.getJobDetail().getJobDataMap().getString("url");
+                if (url.contains(",")) {
+                    String[] var = url.split(",");
+                    url = var[ThreadLocalRandom.current().nextInt(var.length)];
+                }
             }
             OkHttpClientInvoker invoker = (OkHttpClientInvoker) ApplicationContextBeanUtil.getBean("okHttpClientInvoker");
             invoker.invoke(url);

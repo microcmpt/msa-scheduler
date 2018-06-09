@@ -41,6 +41,7 @@ public class CronJobService {
             JobDetail jobDetail = JobBuilder.newJob(SchedulerJob.class).withIdentity(jobModule.getJobName(),
                     jobModule.getJobGroupName()).withDescription(jobModule.getJobDescription()).build();
             jobDetail.getJobDataMap().put("url", jobModule.getUrl());
+            jobDetail.getJobDataMap().put("applicationId", jobModule.getApplicationId());
             // 添加Job监听器
             Matcher matcher = KeyMatcher.keyEquals(jobDetail.getKey());
             scheduler.getListenerManager().addJobListener(new SchedulerJobListener(jobDetail.getKey() + "Listener", sender), matcher);
