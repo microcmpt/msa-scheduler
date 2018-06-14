@@ -36,7 +36,7 @@ public class NotifyEmailSender {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(properties.getUsername());
             message.setTo(to);
-            message.setSubject("主题：定时任务调度中心任务执行报告");
+            message.setSubject("【msa-scheduler】定时任务调度中心任务执行报告");
             message.setText(content);
             mailSender.send(message);
         });
