@@ -4,6 +4,7 @@ import com.msa.api.regcovery.discovery.ServiceDiscovery;
 import com.msa.scheduler.support.ApplicationContextBeanUtil;
 import com.msa.scheduler.support.ScheduleJobException;
 import com.msa.scheduler.support.http.OkHttpClientInvoker;
+import com.msa.scheduler.support.http.OkHttpClientProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
 import org.springframework.util.StopWatch;
@@ -27,12 +28,15 @@ public class SchedulerJob implements Job {
      */
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
+        OkHttpClientInvoker invoker = (OkHttpClientInvoker) ApplicationContextBeanUtil.getBean("okHttpClientInvoker");
+        OkHttpClientProperties okHttpClientProperties = (OkHttpClientProperties) ApplicationContextBeanUtil.getBean("okHttpClientProperties");
+        String url = "";
         try {
             log.info("execute job:[{}] start...", context.getJobDetail().getKey());
             StopWatch stopWatch = new StopWatch();
             stopWatch.start();
             JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
-            String url = "";
+
             String applicationId = context.getJobDetail().getJobDataMap().getString("applicationId");
             ServiceDiscovery serviceDiscovery = (ServiceDiscovery) ApplicationContextBeanUtil.getBean("serviceDiscovery");
             try {
@@ -55,13 +59,43 @@ public class SchedulerJob implements Job {
                     url = "http://" + url;
                 }
             }
-            OkHttpClientInvoker invoker = (OkHttpClientInvoker) ApplicationContextBeanUtil.getBean("okHttpClientInvoker");
             invoker.invoke(url);
             stopWatch.stop();
             log.info("execute job:[{}] end, take time {} ms.", context.getJobDetail().getKey(), stopWatch.getTotalTimeMillis());
         } catch (Exception e) {
-            log.info("execute job:[{}] error, cause by:", context.getJobDetail().getKey(), e);
-            throw new JobExecutionException(e);
+            int retries = okHttpClientProperties.getRetries();
+            boolean retrySucc = false;
+            if (retries != 0) {
+                int var = 0;
+                while (var < retries) {
+                    retrySucc = retryRequest(url, invoker);
+                    if (retrySucc) {
+                        break;
+                    }
+                    var ++;
+                }
+            }
+            if (!retrySucc) {
+                log.info("execute job:[{}] error, cause by:", context.getJobDetail().getKey(), e);
+                throw new JobExecutionException(e);
+            }
         }
+    }
+
+    /**
+     * Retry request boolean.
+     *
+     * @param url     the url
+     * @param invoker the invoker
+     * @return the boolean
+     */
+    private boolean retryRequest(String url, OkHttpClientInvoker invoker) {
+        boolean hasNoException = true;
+        try {
+            invoker.invoke(url);
+        } catch (Exception e) {
+            hasNoException = false;
+        }
+        return hasNoException;
     }
 }

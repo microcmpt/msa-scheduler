@@ -16,4 +16,5 @@ public class OkHttpClientProperties {
     private int connectTimeout = 10;
     private int readTimeout = 10;
     private int writeTimeout = 10;
+    private int retries;
 }
