@@ -1,5 +1,6 @@
 package com.msa.scheduler.support.mail;
 
+import com.msa.scheduler.support.Base64Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -60,7 +61,8 @@ public class EmailSenderConfiguration {
         Assert.hasText(this.properties.getUsername(), "scheduler.mail.username must be required");
         sender.setUsername(this.properties.getUsername());
         Assert.hasText(this.properties.getPassword(), "scheduler.mail.password must be required");
-        sender.setPassword(this.properties.getPassword());
+        String password = Base64Util.decode(this.properties.getPassword());
+        sender.setPassword(password);
         if (StringUtils.isEmpty(this.properties.getProtocol())) {
             sender.setProtocol("smtp");
         } else {
