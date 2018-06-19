@@ -7,9 +7,11 @@ import com.msa.scheduler.support.http.OkHttpClientInvoker;
 import com.msa.scheduler.support.http.OkHttpClientProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.util.StopWatch;
 import org.springframework.util.StringUtils;
 
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -38,11 +40,17 @@ public class SchedulerJob implements Job {
             JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
 
             String applicationId = context.getJobDetail().getJobDataMap().getString("applicationId");
-            ServiceDiscovery serviceDiscovery = (ServiceDiscovery) ApplicationContextBeanUtil.getBean("serviceDiscovery");
+            ServiceDiscovery serviceDiscovery = null;
             try {
-                url = serviceDiscovery.discover(jobDataMap.getString("applicationId")).replace(":=", "");
-                String uri =  jobDataMap.getString("uri");
-                url = uri.startsWith("/") ? "http://" + url + uri : "http://" + uri + "/" + uri;
+                serviceDiscovery = (ServiceDiscovery) ApplicationContextBeanUtil.getBean("serviceDiscovery");
+            } catch (NoSuchBeanDefinitionException ex) {
+            }
+            try {
+                if (Objects.nonNull(serviceDiscovery)) {
+                    url = serviceDiscovery.discover(jobDataMap.getString("applicationId")).replace(":=", "");
+                    String uri =  jobDataMap.getString("uri");
+                    url = uri.startsWith("/") ? "http://" + url + uri : "http://" + uri + "/" + uri;
+                }
             } catch (Exception e) {
                 log.warn("{} can not found in service registry!", applicationId);
             }

@@ -168,7 +168,7 @@ public class QuartzConfiguration {
      * @return the zk service discovery
      */
     @Bean
-    @ConditionalOnProperty(name = "scheduler.zk.addresses")
+    @ConditionalOnProperty(name = "scheduler.zk.enable", havingValue = "true")
     @ConditionalOnClass(ZkServiceDiscovery.class)
     public ZkServiceDiscovery serviceDiscovery(SchedulerProperties properties) {
         ZkServiceDiscovery serviceDiscovery = new ZkServiceDiscovery();

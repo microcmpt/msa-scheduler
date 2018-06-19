@@ -65,9 +65,15 @@ public class SchedulerProperties {
     private String clusterCheckinInterval;
 
     /**
+     * The Zk enable.
+     */
+    @Value("${scheduler.zk.enable:false}")
+    private String zkEnable;
+
+    /**
      * The Zk addresses.
      */
-    @Value("${scheduler.zk.addresses}")
+    @Value("${scheduler.zk.addresses:localhost:2181}")
     private String zkAddresses;
 
 }
