@@ -67,9 +67,9 @@ public class SchedulerJob implements Job {
                     url = "http://" + url;
                 }
             }
-            invoker.invoke(url);
+            String resp = invoker.invoke(url);
             stopWatch.stop();
-            log.info("execute job:[{}] end, take time {} ms.", context.getJobDetail().getKey(), stopWatch.getTotalTimeMillis());
+            log.info("execute job:[{}] end, resp:{}, take time {} ms.", context.getJobDetail().getKey(), resp, stopWatch.getTotalTimeMillis());
         } catch (Exception e) {
             int retries = okHttpClientProperties.getRetries();
             boolean retrySucc = false;
