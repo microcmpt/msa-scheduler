@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -105,14 +106,14 @@ public class CronJobController extends BaseController {
         return buildSuccess();
     }
 
-    @GetMapping("/hello")
-    public String hello() {
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        System.out.println("hello");
-        return "ok";
+    /**
+     * Gets jobs.
+     *
+     * @return the jobs
+     */
+    @GetMapping(value = "/jobs")
+    public Map<String, Object> getJobs() {
+        List<ScheduleJobModule> jobs = cronJobService.getAllJobs();
+        return buildSuccess(jobs);
     }
 }

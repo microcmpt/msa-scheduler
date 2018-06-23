@@ -1,13 +1,16 @@
 package com.msa.scheduler.scheduler;
 
+import com.google.common.collect.Lists;
 import com.msa.scheduler.support.ScheduleJobException;
 import com.msa.scheduler.support.mail.NotifyEmailSender;
 import org.quartz.*;
+import org.quartz.impl.matchers.GroupMatcher;
 import org.quartz.impl.matchers.KeyMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -155,5 +158,42 @@ public class CronJobService {
         } catch (SchedulerException e) {
             throw new ScheduleJobException("更新定时任务cron异常", e);
         }
+    }
+
+    /**
+     * Gets all jobs.
+     *
+     * @return the all jobs
+     */
+    public List<ScheduleJobModule> getAllJobs() {
+        List<ScheduleJobModule> jobs = Lists.newArrayList();
+        try {
+            List<String> groups = scheduler.getJobGroupNames();
+            groups.forEach(group -> {
+                try {
+                    scheduler.getJobKeys(GroupMatcher.groupEquals(group)).forEach(jobKey -> {
+                        ScheduleJobModule job = new ScheduleJobModule();
+                        String jobName = jobKey.getName();
+                        String jobGroup = jobKey.getGroup();
+                        job.setJobName(jobName);
+                        job.setJobGroupName(jobGroup);
+                        try {
+                            JobDataMap jobDataMap = scheduler.getJobDetail(jobKey).getJobDataMap();
+                            job.setApplicationId(jobDataMap.getString("applicationId"));
+                            Trigger trigger = scheduler.getTriggersOfJob(jobKey).get(0);
+                        } catch (SchedulerException e) {
+                            throw new ScheduleJobException("获取所有定时任务异常", e);
+                        }
+                        jobs.add(job);
+                    });
+                } catch (SchedulerException e) {
+                    throw new ScheduleJobException("获取所有定时任务异常", e);
+                }
+            });
+        } catch (SchedulerException e) {
+            throw new ScheduleJobException("获取所有定时任务异常", e);
+        }
+
+        return jobs;
     }
 }
