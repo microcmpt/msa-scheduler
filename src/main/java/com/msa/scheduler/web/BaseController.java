@@ -19,6 +19,7 @@ public class BaseController {
     protected Map<String, Object> buildSuccess() {
         Map<String, Object> map = Maps.newHashMap();
         map.put("status", "ok");
+        map.put("message", "操作成功！");
         return map;
     }
 
@@ -31,6 +32,7 @@ public class BaseController {
     protected Map<String, Object> buildSuccess(List<ScheduleJobModule> jobs) {
         Map<String, Object> map = Maps.newHashMap();
         map.put("status", "ok");
+        map.put("message", "操作成功！");
         map.put("jobs", jobs);
         return map;
     }

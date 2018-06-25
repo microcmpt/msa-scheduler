@@ -26,10 +26,10 @@ public class ScheduleJobModule {
     private String cron;
     private int priority = Trigger.DEFAULT_PRIORITY;
     private int misfire = CronTrigger.MISFIRE_INSTRUCTION_DO_NOTHING;
-    private String applicationId;
-    private String uri;
-    private String url;
-    private String jobDescription;
-    private String triggerDescription;
+    private String applicationId = "";
+    private String uri = "";
+    private String url = "";
+    private String jobDescription = "";
+    private String triggerDescription = "";
     private boolean startNow;
 }
