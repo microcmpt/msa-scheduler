@@ -1,7 +1,6 @@
 package com.msa.scheduler.scheduler;
 
 import com.google.common.collect.Lists;
-import com.msa.scheduler.support.DateParseUtil;
 import com.msa.scheduler.support.ScheduleJobException;
 import com.msa.scheduler.support.mail.NotifyEmailSender;
 import org.quartz.*;
@@ -48,7 +47,6 @@ public class CronJobService {
             jobDetail.getJobDataMap().put("url", jobModule.getUrl());
             jobDetail.getJobDataMap().put("applicationId", jobModule.getApplicationId());
             jobDetail.getJobDataMap().put("uri", jobModule.getUri());
-            jobDetail.getJobDataMap().put("cron", jobModule.getCron());
             // 添加Job监听器
             Matcher matcher = KeyMatcher.keyEquals(jobDetail.getKey());
             scheduler.getListenerManager().addJobListener(new SchedulerJobListener(jobDetail.getKey() + "Listener", sender), matcher);
@@ -186,7 +184,8 @@ public class CronJobService {
                             job.setUri(jobDataMap.getString("uri"));
                             job.setUrl(jobDataMap.getString("url"));
                             job.setJobDescription(jobDetail.getDescription());
-                            job.setCron(jobDataMap.getString("cron"));
+                            CronTrigger cronTrigger = (CronTrigger) scheduler.getTriggersOfJob(jobKey).get(0);
+                            job.setCron(cronTrigger.getCronExpression());
                         } catch (SchedulerException e) {
                             throw new ScheduleJobException("获取所有定时任务异常", e);
                         }
