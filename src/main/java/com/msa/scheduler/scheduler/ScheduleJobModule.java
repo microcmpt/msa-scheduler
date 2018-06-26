@@ -32,4 +32,8 @@ public class ScheduleJobModule {
     private String jobDescription = "";
     private String triggerDescription = "";
     private boolean startNow;
+    /**
+     * 此字段只作为输出字段
+     */
+    private String state;
 }

@@ -186,6 +186,8 @@ public class CronJobService {
                             job.setJobDescription(jobDetail.getDescription());
                             CronTrigger cronTrigger = (CronTrigger) scheduler.getTriggersOfJob(jobKey).get(0);
                             job.setCron(cronTrigger.getCronExpression());
+                            Trigger.TriggerState triggerState = scheduler.getTriggerState(cronTrigger.getKey());
+                            job.setState(triggerState.name());
                         } catch (SchedulerException e) {
                             throw new ScheduleJobException("获取所有定时任务异常", e);
                         }
