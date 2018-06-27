@@ -144,20 +144,11 @@ public class CronJobService {
     /**
      * Update job cron.
      *
-     * @param jobName      the job name
-     * @param jobGroupName the job group name
-     * @param cron         the cron
+     * @param job the job
      */
-    public void updateJobCron(String jobName, String jobGroupName, String cron) {
-        TriggerKey triggerKey = TriggerKey.triggerKey(jobName, jobGroupName);
-        try {
-            CronTrigger trigger = (CronTrigger) scheduler.getTrigger(triggerKey);
-            CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(cron);
-            trigger = trigger.getTriggerBuilder().withIdentity(triggerKey).withSchedule(scheduleBuilder).build();
-            scheduler.rescheduleJob(triggerKey, trigger);
-        } catch (SchedulerException e) {
-            throw new ScheduleJobException("更新定时任务cron异常", e);
-        }
+    public void updateJobCron(ScheduleJobModule job) {
+        deleteJob(job.getJobName(), job.getJobGroupName());
+        addJob(job);
     }
 
     /**
@@ -186,7 +177,10 @@ public class CronJobService {
                             job.setJobDescription(jobDetail.getDescription());
                             CronTrigger cronTrigger = (CronTrigger) scheduler.getTriggersOfJob(jobKey).get(0);
                             job.setCron(cronTrigger.getCronExpression());
-                            Trigger.TriggerState triggerState = scheduler.getTriggerState(cronTrigger.getKey());
+                            TriggerKey triggerKey = cronTrigger.getKey();
+                            Trigger.TriggerState triggerState = scheduler.getTriggerState(triggerKey);
+                            job.setTriggerName(triggerKey.getName());
+                            job.setTriggerGroupName(triggerKey.getGroup());
                             job.setState(triggerState.name());
                         } catch (SchedulerException e) {
                             throw new ScheduleJobException("获取所有定时任务异常", e);
@@ -229,6 +223,8 @@ public class CronJobService {
             module.setCron(cronTrigger.getCronExpression());
             module.setMisfire(cronTrigger.getMisfireInstruction());
             module.setTriggerDescription(cronTrigger.getDescription());
+            module.setTriggerName(cronTrigger.getKey().getName());
+            module.setTriggerGroupName(cronTrigger.getKey().getGroup());
             return module;
         } catch (SchedulerException e) {
             throw new ScheduleJobException("获取job详情异常", e);

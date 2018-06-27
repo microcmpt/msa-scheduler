@@ -93,16 +93,12 @@ public class CronJobController extends BaseController {
     /**
      * Update job cron map.
      *
-     * @param jobName      the job name
-     * @param jobGroupName the job group name
-     * @param cron         the cron
+     * @param jobModule the job module
      * @return the map
      */
-    @PutMapping(value = "/update/job/{jobName}/group/{jobGroupName}/cron{cron}")
-    public Map<String, Object> updateJobCron(@PathVariable("jobName") String jobName,
-                                        @PathVariable("jobGroupName") String jobGroupName,
-                                        @PathVariable("jobGroupName") String cron) {
-        cronJobService.updateJobCron(jobName, jobGroupName, cron);
+    @PutMapping(value = "/update", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public Map<String, Object> updateJobCron(@RequestBody ScheduleJobModule jobModule) {
+        cronJobService.updateJobCron(jobModule);
         return buildSuccess();
     }
 
@@ -117,6 +113,13 @@ public class CronJobController extends BaseController {
         return buildSuccess(jobs);
     }
 
+    /**
+     * Load map.
+     *
+     * @param jobName      the job name
+     * @param jobGroupName the job group name
+     * @return the map
+     */
     @GetMapping(value = "/load/job/{jobName}/group/{jobGroupName}")
     public Map<String, Object> load(@PathVariable("jobName") String jobName,
                                     @PathVariable("jobGroupName") String jobGroupName) {

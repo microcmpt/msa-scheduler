@@ -31,6 +31,7 @@ public class ScheduleJobModule {
     private String url = "";
     private String jobDescription = "";
     private String triggerDescription = "";
+    @Deprecated
     private boolean startNow;
     /**
      * 此字段只作为输出字段
