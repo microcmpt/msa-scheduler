@@ -26,14 +26,14 @@ public class BaseController {
     /**
      * Build success map.
      *
-     * @param jobs the jobs
+     * @param data the data
      * @return the map
      */
-    protected Map<String, Object> buildSuccess(List<ScheduleJobModule> jobs) {
+    protected Map<String, Object> buildSuccess(Object data) {
         Map<String, Object> map = Maps.newHashMap();
         map.put("status", "ok");
         map.put("message", "操作成功！");
-        map.put("jobs", jobs);
+        map.put("data", data);
         return map;
     }
 }

@@ -116,4 +116,10 @@ public class CronJobController extends BaseController {
         List<ScheduleJobModule> jobs = cronJobService.getAllJobs();
         return buildSuccess(jobs);
     }
+
+    @GetMapping(value = "/load/job/{jobName}/group/{jobGroupName}")
+    public Map<String, Object> load(@PathVariable("jobName") String jobName,
+                                    @PathVariable("jobGroupName") String jobGroupName) {
+        return buildSuccess(cronJobService.loadJob(jobName, jobGroupName));
+    }
 }

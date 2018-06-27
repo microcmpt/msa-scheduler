@@ -37,8 +37,8 @@ public class CronJobService {
     @Transactional
     public void addJob(ScheduleJobModule jobModule) {
         try {
-            JobDetail var = scheduler.getJobDetail(new JobKey(jobModule.getJobName(), jobModule.getJobGroupName()));
-            if (Objects.nonNull(var)) {
+            boolean existsJob = scheduler.checkExists(new JobKey(jobModule.getJobName(), jobModule.getJobGroupName()));
+            if (existsJob) {
                 throw new ScheduleJobException("Job已存在！");
             }
 
@@ -202,5 +202,36 @@ public class CronJobService {
         }
 
         return jobs;
+    }
+
+    /**
+     * Load job schedule job module.
+     *
+     * @param jobName      the job name
+     * @param jobGroupName the job group name
+     * @return the schedule job module
+     */
+    public ScheduleJobModule loadJob(String jobName, String jobGroupName) {
+        try {
+            JobKey jobKey = JobKey.jobKey(jobName, jobGroupName);
+            JobDetail jobDetail = scheduler.getJobDetail(jobKey);
+            ScheduleJobModule module = new ScheduleJobModule();
+            module.setJobName(jobName);
+            module.setJobGroupName(jobGroupName);
+            JobDataMap jobDataMap = jobDetail.getJobDataMap();
+            module.setApplicationId(jobDataMap.getString("applicationId"));
+            module.setUri(jobDataMap.getString("uri"));
+            module.setUrl(jobDataMap.getString("url"));
+            module.setJobDescription(jobDetail.getDescription());
+
+            CronTrigger cronTrigger = (CronTrigger) scheduler.getTriggersOfJob(jobKey).get(0);
+            module.setPriority(cronTrigger.getPriority());
+            module.setCron(cronTrigger.getCronExpression());
+            module.setMisfire(cronTrigger.getMisfireInstruction());
+            module.setTriggerDescription(cronTrigger.getDescription());
+            return module;
+        } catch (SchedulerException e) {
+            throw new ScheduleJobException("获取job详情异常", e);
+        }
     }
 }
