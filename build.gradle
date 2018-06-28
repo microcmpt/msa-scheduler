@@ -1,5 +1,5 @@
 group 'com.github.microcmpt'
-version '1.0.0-SNAPSHOT'
+version '1.0.0'
 
 apply plugin: 'java'
 apply plugin: 'maven'
@@ -37,4 +37,28 @@ buildscript {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:1.5.10.RELEASE"
     }
 }
+
+task compressMapping(type: Zip, dependsOn: bootRepackage) {
+    from "$buildDir/dist"
+    into ''
+    baseName = 'msa-scheduler'
+    destinationDir file("$buildDir/outputs")
+}
+
+task customizeScheduler {
+    copy {
+        from("${projectDir}/bin")
+        into("${buildDir}/dist/bin")
+    }
+    copy {
+        from("${projectDir}/config")
+        into("${buildDir}/dist/config")
+    }
+    copy {
+        from ("$buildDir/libs/msa-scheduler-${project.version}.jar")
+        into("${buildDir}/dist/lib")
+    }
+}
+
+
 
