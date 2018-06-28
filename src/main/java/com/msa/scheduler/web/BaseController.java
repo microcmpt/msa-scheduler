@@ -36,4 +36,22 @@ public class BaseController {
         map.put("data", data);
         return map;
     }
+
+    /**
+     * Build success map.
+     *
+     * @param data        the data
+     * @param currentPage the current page
+     * @param totals      the totals
+     * @return the map
+     */
+    protected Map<String, Object> buildSuccess(Object data, int currentPage, int pages) {
+        Map<String, Object> map = Maps.newHashMap();
+        map.put("status", "ok");
+        map.put("message", "操作成功！");
+        map.put("pages", pages);
+        map.put("currentPage", currentPage);
+        map.put("data", data);
+        return map;
+    }
 }

@@ -1,9 +1,11 @@
 package com.msa.scheduler.web;
 
+import com.google.common.collect.Lists;
 import com.msa.scheduler.scheduler.CronJobService;
 import com.msa.scheduler.scheduler.ScheduleJobModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -105,12 +107,19 @@ public class CronJobController extends BaseController {
     /**
      * Gets jobs.
      *
+     * @param page the page
      * @return the jobs
      */
-    @GetMapping(value = "/jobs")
-    public Map<String, Object> getJobs() {
+    @GetMapping(value = "/jobs/{page}")
+    public Map<String, Object> getJobs(@PathVariable("page")int page) {
         List<ScheduleJobModule> jobs = cronJobService.getAllJobs();
-        return buildSuccess(jobs);
+        int pages = 1;
+        if (!CollectionUtils.isEmpty(jobs)) {
+            List<List<ScheduleJobModule>> jobPartitions = Lists.partition(jobs, 20);
+            jobs = jobPartitions.get(page - 1);
+            pages = jobPartitions.size();
+        }
+        return buildSuccess(jobs, page, pages);
     }
 
     /**
