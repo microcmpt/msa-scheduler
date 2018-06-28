@@ -1,2 +1,4 @@
 @echo off
-java -Dconfig.path.prefix=../ -jar ../lib/msa-scheduler-1.0.0.jar
+cd..
+set "configpath=%cd%"
+java -Dconfig.path.prefix="%configpath%" -jar "%configpath%"/lib/msa-scheduler-1.0.0.jar
