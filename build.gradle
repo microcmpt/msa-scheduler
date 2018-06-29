@@ -60,6 +60,10 @@ task customizeScheduler {
         into("${buildDir}/dist/doc")
     }
     copy {
+        from("${projectDir}/README.md")
+        into("${buildDir}/dist/")
+    }
+    copy {
         from ("$buildDir/libs/msa-scheduler-${project.version}.jar")
         into("${buildDir}/dist/lib")
     }
