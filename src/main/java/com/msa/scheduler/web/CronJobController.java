@@ -32,6 +32,7 @@ public class CronJobController extends BaseController {
      */
     @PostMapping(value = "/add", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public Map<String, Object> addJob(@RequestBody @Valid ScheduleJobModule jobModule) {
+        validateCronExpress(jobModule.getCron());
         cronJobService.addJob(jobModule);
         return buildSuccess();
     }
@@ -87,7 +88,7 @@ public class CronJobController extends BaseController {
      */
     @PutMapping(value = "/start/job/{jobName}/group/{jobGroupName}")
     public Map<String, Object> startJob(@PathVariable("jobName") String jobName,
-                                         @PathVariable("jobGroupName") String jobGroupName) {
+                                        @PathVariable("jobGroupName") String jobGroupName) {
         cronJobService.startNow(jobName, jobGroupName);
         return buildSuccess();
     }
@@ -100,6 +101,7 @@ public class CronJobController extends BaseController {
      */
     @PutMapping(value = "/update", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public Map<String, Object> updateJobCron(@RequestBody ScheduleJobModule jobModule) {
+        validateCronExpress(jobModule.getCron());
         cronJobService.updateJobCron(jobModule);
         return buildSuccess();
     }
@@ -111,7 +113,7 @@ public class CronJobController extends BaseController {
      * @return the jobs
      */
     @GetMapping(value = "/jobs/{page}")
-    public Map<String, Object> getJobs(@PathVariable("page")int page) {
+    public Map<String, Object> getJobs(@PathVariable("page") int page) {
         List<ScheduleJobModule> jobs = cronJobService.getAllJobs();
         int pages = 1;
         if (!CollectionUtils.isEmpty(jobs)) {

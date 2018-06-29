@@ -1,9 +1,10 @@
 package com.msa.scheduler.web;
 
 import com.google.common.collect.Maps;
-import com.msa.scheduler.scheduler.ScheduleJobModule;
+import com.msa.scheduler.support.ScheduleJobException;
+import org.quartz.CronExpression;
 
-import java.util.List;
+import java.text.ParseException;
 import java.util.Map;
 
 /**
@@ -42,7 +43,7 @@ public class BaseController {
      *
      * @param data        the data
      * @param currentPage the current page
-     * @param totals      the totals
+     * @param pages       the pages
      * @return the map
      */
     protected Map<String, Object> buildSuccess(Object data, int currentPage, int pages) {
@@ -53,5 +54,18 @@ public class BaseController {
         map.put("currentPage", currentPage);
         map.put("data", data);
         return map;
+    }
+
+    /**
+     * Validate cron express.
+     *
+     * @param cron the cron
+     */
+    protected void validateCronExpress(String cron) {
+        try {
+            new CronExpression(cron);
+        } catch (ParseException e) {
+            throw new ScheduleJobException("频率表达式格式不正确，请检查！", e);
+        }
     }
 }
