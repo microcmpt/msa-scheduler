@@ -16,16 +16,25 @@ repositories {
 dependencies {
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.16.20'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '1.5.10.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-quartz', version: '2.0.0.RELEASE'
-    compile group: 'org.springframework.boot', name:'spring-boot-starter-mail', version: '1.5.10.RELEASE'
+    compile(group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '1.5.10.RELEASE') {
+        exclude group: 'ch.qos.logback', module: 'logback-classic'
+        exclude group: 'org.slf4j', module: 'log4j-over-slf4j'
+    }
+    compile(group: 'org.springframework.boot', name: 'spring-boot-starter-quartz', version: '2.0.0.RELEASE') {
+        exclude group: 'ch.qos.logback', module: 'logback-classic'
+        exclude group: 'org.slf4j', module: 'log4j-over-slf4j'
+    }
+    compile(group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '1.5.10.RELEASE') {
+        exclude group: 'ch.qos.logback', module: 'logback-classic'
+        exclude group: 'org.slf4j', module: 'log4j-over-slf4j'
+    }
     compile 'mysql:mysql-connector-java:5.1.46'
     compile 'com.squareup.okhttp3:okhttp:3.10.0'
-    compile group: 'com.google.guava', name: 'guava', version:'23.0'
+    compile group: 'com.google.guava', name: 'guava', version: '23.0'
     compile 'com.github.microcmpt:msa-api-regcovery:1.0.2'
     compile 'com.github.microcmpt:msa-scheduler-dashboard-ui:1.0.3'
     compile 'commons-codec:commons-codec:1.10'
-    testCompile group: 'org.springframework.boot', name:'spring-boot-starter-test', version: '1.5.10.RELEASE'
+    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '1.5.10.RELEASE'
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
@@ -64,7 +73,7 @@ task customizeScheduler {
         into("${buildDir}/dist/")
     }
     copy {
-        from ("$buildDir/libs/msa-scheduler-${project.version}.jar")
+        from("$buildDir/libs/msa-scheduler-${project.version}.jar")
         into("${buildDir}/dist/lib")
     }
 }
