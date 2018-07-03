@@ -46,7 +46,7 @@ public class CronJobService {
                     jobModule.getJobGroupName()).withDescription(jobModule.getJobDescription()).build();
             jobDetail.getJobDataMap().put("url", jobModule.getUrl());
             jobDetail.getJobDataMap().put("applicationId", jobModule.getApplicationId());
-            jobDetail.getJobDataMap().put("uri", jobModule.getUri());
+            jobDetail.getJobDataMap().put("path", jobModule.getPath());
             // 添加Job监听器
             Matcher matcher = KeyMatcher.keyEquals(jobDetail.getKey());
             scheduler.getListenerManager().addJobListener(new SchedulerJobListener(jobDetail.getKey() + "Listener", sender), matcher);
@@ -172,7 +172,7 @@ public class CronJobService {
                             JobDetail jobDetail = scheduler.getJobDetail(jobKey);
                             JobDataMap jobDataMap = jobDetail.getJobDataMap();
                             job.setApplicationId(jobDataMap.getString("applicationId"));
-                            job.setUri(jobDataMap.getString("uri"));
+                            job.setPath(jobDataMap.getString("path"));
                             job.setUrl(jobDataMap.getString("url"));
                             job.setJobDescription(jobDetail.getDescription());
                             CronTrigger cronTrigger = (CronTrigger) scheduler.getTriggersOfJob(jobKey).get(0);
@@ -214,7 +214,7 @@ public class CronJobService {
             module.setJobGroupName(jobGroupName);
             JobDataMap jobDataMap = jobDetail.getJobDataMap();
             module.setApplicationId(jobDataMap.getString("applicationId"));
-            module.setUri(jobDataMap.getString("uri"));
+            module.setPath(jobDataMap.getString("path"));
             module.setUrl(jobDataMap.getString("url"));
             module.setJobDescription(jobDetail.getDescription());
 

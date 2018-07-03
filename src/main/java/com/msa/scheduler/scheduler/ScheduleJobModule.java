@@ -27,7 +27,7 @@ public class ScheduleJobModule {
     private int priority = Trigger.DEFAULT_PRIORITY;
     private int misfire = CronTrigger.MISFIRE_INSTRUCTION_DO_NOTHING;
     private String applicationId = "";
-    private String uri = "";
+    private String path = "";
     private String url = "";
     private String jobDescription = "";
     private String triggerDescription = "";

@@ -48,8 +48,8 @@ public class SchedulerJob implements Job {
             try {
                 if (Objects.nonNull(serviceDiscovery)) {
                     url = serviceDiscovery.discover(jobDataMap.getString("applicationId")).replace(":=", "");
-                    String uri =  jobDataMap.getString("uri");
-                    url = uri.startsWith("/") ? "http://" + url + uri : "http://" + uri + "/" + uri;
+                    String path =  jobDataMap.getString("path");
+                    url = path.startsWith("/") ? "http://" + url + path : "http://" + path + "/" + path;
                 }
             } catch (Exception e) {
                 log.warn("{} can not found in service registry!", applicationId);
