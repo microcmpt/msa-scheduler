@@ -77,7 +77,7 @@ public class CronJobService {
 
             scheduler.scheduleJob(jobDetail, trigger);
         } catch (SchedulerException e) {
-            throw new ScheduleJobException("添加定时器任务异常", e);
+            throw new ScheduleJobException("添加定时器任务异常！", e);
         }
     }
 
@@ -92,7 +92,7 @@ public class CronJobService {
         try {
             scheduler.pauseJob(jobKey);
         } catch (SchedulerException e) {
-            throw new ScheduleJobException("暂停定时任务异常", e);
+            throw new ScheduleJobException("暂停定时任务异常！", e);
         }
     }
 
@@ -107,7 +107,7 @@ public class CronJobService {
         try {
             scheduler.resumeJob(jobKey);
         } catch (SchedulerException e) {
-            throw new ScheduleJobException("恢复定时任务异常", e);
+            throw new ScheduleJobException("恢复定时任务异常！", e);
         }
     }
 
@@ -122,7 +122,7 @@ public class CronJobService {
         try {
             scheduler.deleteJob(jobKey);
         } catch (SchedulerException e) {
-            throw new ScheduleJobException("删除定时任务异常", e);
+            throw new ScheduleJobException("删除定时任务异常！", e);
         }
     }
 
@@ -137,7 +137,7 @@ public class CronJobService {
         try {
             scheduler.triggerJob(jobKey);
         } catch (SchedulerException e) {
-            throw new ScheduleJobException("启动定时任务异常", e);
+            throw new ScheduleJobException("启动定时任务异常！", e);
         }
     }
 
@@ -183,16 +183,16 @@ public class CronJobService {
                             job.setTriggerGroupName(triggerKey.getGroup());
                             job.setState(triggerState.name());
                         } catch (SchedulerException e) {
-                            throw new ScheduleJobException("获取所有定时任务异常", e);
+                            throw new ScheduleJobException("获取所有定时任务异常！", e);
                         }
                         jobs.add(job);
                     });
                 } catch (SchedulerException e) {
-                    throw new ScheduleJobException("获取所有定时任务异常", e);
+                    throw new ScheduleJobException("获取所有定时任务异常！", e);
                 }
             });
         } catch (SchedulerException e) {
-            throw new ScheduleJobException("获取所有定时任务异常", e);
+            throw new ScheduleJobException("获取所有定时任务异常！", e);
         }
 
         return jobs;
@@ -227,7 +227,7 @@ public class CronJobService {
             module.setTriggerGroupName(cronTrigger.getKey().getGroup());
             return module;
         } catch (SchedulerException e) {
-            throw new ScheduleJobException("获取job详情异常", e);
+            throw new ScheduleJobException("获取job详情异常！", e);
         }
     }
 }

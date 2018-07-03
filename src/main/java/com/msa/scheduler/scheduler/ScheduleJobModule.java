@@ -14,15 +14,15 @@ import org.quartz.Trigger;
 @Setter
 @NoArgsConstructor
 public class ScheduleJobModule {
-    @NotBlank(message = "jobName is required")
+    @NotBlank(message = "任务不能为空！")
     private String jobName;
-    @NotBlank(message = "jobGroupName is required")
+    @NotBlank(message = "任务组不能为空！")
     private String jobGroupName;
-    @NotBlank(message = "triggerName is required")
+    @NotBlank(message = "触发器不能为空！")
     private String triggerName;
-    @NotBlank(message = "triggerGroupName is required")
+    @NotBlank(message = "触发器组不能为空！")
     private String triggerGroupName;
-    @NotBlank(message = "cron is required")
+    @NotBlank(message = "频率不能为空！")
     private String cron;
     private int priority = Trigger.DEFAULT_PRIORITY;
     private int misfire = CronTrigger.MISFIRE_INSTRUCTION_DO_NOTHING;

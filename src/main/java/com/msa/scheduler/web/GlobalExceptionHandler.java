@@ -42,7 +42,7 @@ public class GlobalExceptionHandler {
         } else if (e instanceof ScheduleJobException) {
             respMap.put("message", e.getMessage());
         } else {
-            respMap.put("message", "system exception");
+            respMap.put("message", "系统异常！");
         }
         log.error("uri:{}, cause by:", request.getRequestURI(), e);
         return respMap;
