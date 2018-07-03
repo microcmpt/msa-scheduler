@@ -2,6 +2,7 @@ package com.msa.scheduler.scheduler;
 
 import com.msa.scheduler.support.mail.NotifyEmailSender;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.quartz.*;
 
 import java.util.Objects;
@@ -102,7 +103,7 @@ public class SchedulerJobListener implements JobListener {
         stringBuilder
                 .append("Job【")
                 .append(jobKey)
-                .append(",")
+                .append(StringUtils.isEmpty(job.getDescription()) ? "" : ",")
                 .append(job.getDescription())
                 .append("】");
         if (Objects.equals("was vetoed", execute)) {
