@@ -19,9 +19,13 @@ msa-scheduler是为调度众多定时任务而生的调度中心，msa-scheduler
   执行start-scheduler.cmd脚本
 - [linux]
   执行start-scheduler.sh脚本
-  
-##### step4:添加一个定时任务
-访问http://localhost:8080/scheduler-ui.html， 新增任务
+
+##### step4:访问scheduler web控制台
+输入http://localhost:8080/scheduler-ui.html
+![](doc/web-console.png)
+
+##### step5:添加一个定时任务
+新增一个定时器任务
 
 ### Properties Introduction
 <table>
