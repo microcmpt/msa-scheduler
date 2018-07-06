@@ -3,6 +3,7 @@ package com.msa.scheduler.scheduler;
 import com.msa.api.regcovery.discovery.ServiceDiscovery;
 import com.msa.scheduler.support.ApplicationContextBeanUtil;
 import com.msa.scheduler.support.ScheduleJobException;
+import com.msa.scheduler.support.eureka.EurekaDiscoveryClient;
 import com.msa.scheduler.support.http.OkHttpClientInvoker;
 import com.msa.scheduler.support.http.OkHttpClientProperties;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +40,7 @@ public class SchedulerJob implements Job {
             stopWatch.start();
             JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
 
+            // microcmpt注册中心
             String applicationId = context.getJobDetail().getJobDataMap().getString("applicationId");
             ServiceDiscovery serviceDiscovery = null;
             try {
@@ -49,11 +51,25 @@ public class SchedulerJob implements Job {
                 if (Objects.nonNull(serviceDiscovery)) {
                     url = serviceDiscovery.discover(jobDataMap.getString("applicationId")).replace(":=", "");
                     String path =  jobDataMap.getString("path");
-                    url = path.startsWith("/") ? "http://" + url + path : "http://" + path + "/" + path;
+                    if (StringUtils.hasText(url) && !StringUtils.hasText(path)) {
+                        url = path.startsWith("/") ? "http://" + url + path : "http://" + url + "/" + path;
+                    }
                 }
             } catch (Exception e) {
                 log.warn("{} can not found in service registry!", applicationId);
             }
+
+            // eureka注册中心
+            if (!StringUtils.hasText(url)) {
+                EurekaDiscoveryClient client = (EurekaDiscoveryClient) ApplicationContextBeanUtil.getBean("eurekaDiscoveryClient");
+                url = client.discoveryUrl(applicationId);
+                String path =  jobDataMap.getString("path");
+                if (!StringUtils.hasText(url) && !StringUtils.hasText(path)) {
+                    url = path.startsWith("/") ? "http://" + url + path : "http://" + url + "/" + path;
+                }
+            }
+
+            // 传统url
             if (!StringUtils.hasText(url)) {
                 url = jobDataMap.getString("url");
                 if (!StringUtils.hasText(url)) {
