@@ -10,7 +10,8 @@ msa-scheduler是为调度众多定时任务而生的调度中心，msa-scheduler
 
 ### Quick Start
 ##### step1:下载二进制包并解压
-[scheduler-1.0.0.zip](https://github.com/microcmpt/msa-scheduler/blob/master/downloads/1.0.0/msa-scheduler-1.0.0.zip)
+- [scheduler-1.0.0.zip](https://github.com/microcmpt/msa-scheduler/blob/master/downloads/1.0.0/msa-scheduler-1.0.0.zip)
+- [scheduler-1.0.1.zip](https://github.com/microcmpt/msa-scheduler/blob/master/downloads/1.0.1/msa-scheduler-1.0.1.zip)
 
 ##### step2:执行doc下的sql脚本
 
