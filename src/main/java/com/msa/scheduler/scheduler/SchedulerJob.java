@@ -51,7 +51,7 @@ public class SchedulerJob implements Job {
                 if (Objects.nonNull(serviceDiscovery)) {
                     url = serviceDiscovery.discover(jobDataMap.getString("applicationId")).replace(":=", "");
                     String path =  jobDataMap.getString("path");
-                    if (StringUtils.hasText(url) && !StringUtils.hasText(path)) {
+                    if (StringUtils.hasText(url) && StringUtils.hasText(path)) {
                         url = path.startsWith("/") ? "http://" + url + path : "http://" + url + "/" + path;
                     }
                 }
@@ -64,7 +64,7 @@ public class SchedulerJob implements Job {
                 EurekaDiscoveryClient client = (EurekaDiscoveryClient) ApplicationContextBeanUtil.getBean("eurekaDiscoveryClient");
                 url = client.discoveryUrl(applicationId);
                 String path =  jobDataMap.getString("path");
-                if (!StringUtils.hasText(url) && !StringUtils.hasText(path)) {
+                if (StringUtils.hasText(url) && StringUtils.hasText(path)) {
                     url = path.startsWith("/") ? "http://" + url + path : "http://" + url + "/" + path;
                 }
             }
