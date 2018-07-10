@@ -1,6 +1,6 @@
 #!/bin/sh
 # 启动类
-export MAIN_CLASS=com.msa.schedulercom.msa.scheduler.SchedulerBootstrap
+export JAR_NAME=msa-scheduler-1.0.1.jar
 
 # start scheduler center
 if [ "$1" = "start" ] ; then
@@ -8,22 +8,19 @@ if [ "$1" = "start" ] ; then
     echo start scheduler center
     echo -------------------------------------------
 
-    # 设置项目代码路径
-    export CODE_HOME=".."
+    # 设置配置文件路径
+    export BASE_PATH=$(dirname "$PWD")
 
-    # 设置依赖路径
-    export CLASSPATH="$CODE_HOME/lib/msa-scheduler-1.0.1.jar"
+    # 设置启动类jar
+    export CLASSPATH="$BASE_PATH/lib/$JAR_NAME"
 
     # java可执行文件位置
     export _EXECJAVA="$JAVA_HOME/bin/java"
 
-    # 设置配置文件路径
-    export CONFIG_PATH=..
-
     # JVM启动参数
-    export JAVA_OPTS="-server -Xms128m -Xmx256m -Xss256k -XX:MaxDirectMemorySize=128m -Dconfig.path.prefix=$CONFIG_PATH"
+    export JAVA_OPTS="-server -Xms128m -Xmx256m -Xss256k -XX:MaxDirectMemorySize=128m -Dconfig.path.prefix=$BASE_PATH"
 
-    $_EXECJAVA $JAVA_OPTS -classpath $CLASSPATH $MAIN_CLASS &
+    $_EXECJAVA $JAVA_OPTS -jar $CLASSPATH &
 
 # stop scheduler center
 elif [ "$1" = "stop" ] ; then
@@ -31,7 +28,7 @@ elif [ "$1" = "stop" ] ; then
     echo stop scheduler center
 
     #所有相关进程
-    PIDs=`jps -l | grep $MAIN_CLASS | awk '{print $1}'`
+    PIDs=`jps -l | grep $JAR_NAME | awk '{print $1}'`
     #停止进程
     if [ -n "$PIDs" ]; then
       for PID in $PIDs; do
@@ -42,7 +39,7 @@ elif [ "$1" = "stop" ] ; then
 
     #等待50秒
     for i in 1 10; do
-      PIDs=`jps -l | grep $MAIN_CLASS | awk '{print $1}'`
+      PIDs=`jps -l | grep $JAR_NAME | awk '{print $1}'`
       if [ ! -n "$PIDs" ]; then
         echo "stop scheduler center success"
         echo -------------------------------------------
