@@ -8,7 +8,7 @@ if [ "$1" = "start" ] ; then
     echo start scheduler center
     echo -------------------------------------------
 
-    # 设置配置文件路径
+    # 设置父目录
     export BASE_PATH=$(dirname "$PWD")
 
     # 设置启动类jar

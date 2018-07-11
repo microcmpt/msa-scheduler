@@ -7,19 +7,20 @@ msa-scheduler是为调度众多定时任务而生的调度中心，msa-scheduler
 - 可伸缩
 - 错失触发
 - 任务优先级
+- 发送http请求调用任务，将定时任务从应用中解耦（支持spring cloud eureka服务发现、microcmpt服务发现以及传统的url）
 
 ### Quick Start
 ##### step1:下载二进制包并解压
-- [scheduler-1.0.0.zip](https://github.com/microcmpt/msa-scheduler/blob/master/downloads/1.0.0/msa-scheduler-1.0.0.zip)
-- [scheduler-1.0.1.zip](https://github.com/microcmpt/msa-scheduler/blob/master/downloads/1.0.1/msa-scheduler-1.0.1.zip)
+- [scheduler-1.0.0.zip](https://github.com/microcmpt/microcmpt.github.io/blob/master/downloads/scheduler/1.0.0/msa-scheduler-1.0.0.zip)
+- [scheduler-1.0.1.zip](https://github.com/microcmpt/microcmpt.github.io/blob/master/downloads/scheduler/1.0.1/msa-scheduler-1.0.1.zip)
 
 ##### step2:执行doc下的sql脚本
 
 ##### step3:启动scheduler
 - [windows]
-  执行start-scheduler.cmd脚本
+  执行scheduler.cmd脚本
 - [linux]
-  执行start-scheduler.sh脚本
+  执行scheduler.sh脚本
 
 ##### step4:访问scheduler web控制台
 输入http://localhost:8080/scheduler-ui.html
@@ -27,6 +28,22 @@ msa-scheduler是为调度众多定时任务而生的调度中心，msa-scheduler
 
 ##### step5:添加一个定时任务
 新增一个定时器任务
+
+### Open mail notification
+##### step1:通过提供的工具，对scheduler.mail.password加密并修改config/scheduler.properties中scheduler.mail.password的值
+工具下载：[mail-encrypt](https://github.com/microcmpt/microcmpt.github.io/blob/master/downloads/scheduler/mail-encrypt.jar)
+
+##### step2:运行加密工具包
+```aidl
+java -jar mail-encrypt.jar
+```
+
+##### step3:根据提示，输入你要加密的邮箱授权码，按回车键，加密后的密码会显示在窗口下方
+```text
+Please input your encode data:
+123456
+After your encode data is:MTIzNDU2MXEydzNlNHIhQCMk
+```
 
 ### Properties Introduction
 <table>
